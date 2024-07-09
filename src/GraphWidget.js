@@ -1,15 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import zoomPlugin from 'chartjs-plugin-zoom';
 import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded';
+import RotateLeftRoundedIcon from '@mui/icons-material/RotateLeftRounded';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, zoomPlugin);
 
-const GraphWidget = () => {
+const GraphWidget = ({ timeRange }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [dropdownAnchorEl, setDropdownAnchorEl] = useState(null);
   const [data, setData] = useState({
@@ -24,6 +35,8 @@ const GraphWidget = () => {
       },
     ],
   });
+  const [isZoomed, setIsZoomed] = useState(false);
+  const chartRef = useRef(null);
   const openMenu = Boolean(anchorEl);
   const openDropdown = Boolean(dropdownAnchorEl);
 
@@ -40,12 +53,12 @@ const GraphWidget = () => {
     setDropdownAnchorEl(event.currentTarget);
   };
 
-  // Function to generate labels for past 4 hours in hh:mm format at 15-minute intervals in IST
+  // Function to generate labels for past 30 minutes in hh:mm format at 1-minute intervals in IST
   const generateTimeLabels = (startTime, endTime) => {
     const labels = [];
     const offsetIST = 5.5 * 60 * 60 * 1000; // IST offset in milliseconds
 
-    for (let time = startTime.getTime(); time <= endTime.getTime(); time += 15 * 60 * 1000) {
+    for (let time = startTime.getTime(); time <= endTime.getTime(); time += 60 * 1000) {
       const labelTime = new Date(time + offsetIST);
       const hours = labelTime.getUTCHours().toString().padStart(2, '0');
       const minutes = labelTime.getUTCMinutes().toString().padStart(2, '0');
@@ -57,13 +70,13 @@ const GraphWidget = () => {
   // Ref to store data points across updates
   const dataRef = useRef({
     labels: [],
-    dataPoints: []
+    dataPoints: [],
   });
 
   useEffect(() => {
     // Initial data load
     const now = new Date();
-    const startTime = new Date(now.getTime() - 4 * 60 * 60 * 1000);
+    const startTime = new Date(now.getTime() - 30 * 60 * 1000); // 30 minutes ago
     const initialLabels = generateTimeLabels(startTime, now);
     const initialDataPoints = Array.from({ length: initialLabels.length }, () => Math.floor(Math.random() * 100));
 
@@ -94,6 +107,12 @@ const GraphWidget = () => {
       dataRef.current.labels.push(newLabel);
       dataRef.current.dataPoints.push(newDataPoint);
 
+      // Keep only the last 30 minutes of data (30 minutes)
+      if (dataRef.current.labels.length > 30) {
+        dataRef.current.labels.shift();
+        dataRef.current.dataPoints.shift();
+      }
+
       const newData = {
         labels: dataRef.current.labels,
         datasets: [
@@ -114,17 +133,51 @@ const GraphWidget = () => {
 
   const options = {
     responsive: true,
+    animation: {
+      duration: 0, // Disable all animations
+    },
     plugins: {
       legend: {
         position: 'top',
+      },
+      zoom: {
+        pan: {
+          enabled: !isZoomed,
+          mode: 'x',
+        },
+        zoom: {
+          drag: {
+            enabled: !isZoomed,
+          },
+          mode: 'x',
+          onZoom: ({ chart }) => {
+            setIsZoomed(true);
+            chart.options.plugins.zoom.zoom.drag.enabled = false;
+            chart.options.plugins.zoom.pan.enabled = false;
+            chart.update();
+          },
+        },
       },
     },
     scales: {
       x: {
         type: 'category',
         labels: data.labels,
+        ticks: {
+          maxTicksLimit: 30, // Adjust the max ticks to fit 30 labels
+          autoSkip: false,
+        },
       },
     },
+  };
+
+  const resetZoom = () => {
+    const chart = chartRef.current;
+    chart.resetZoom();
+    setIsZoomed(false);
+    chart.options.plugins.zoom.zoom.drag.enabled = true;
+    chart.options.plugins.zoom.pan.enabled = true;
+    chart.update();
   };
 
   const boxStyle = {
@@ -157,6 +210,28 @@ const GraphWidget = () => {
     position: 'absolute',
     top: '-5px',
     right: '0px',
+  };
+
+  const resetZoomButtonStyle = {
+    position: 'absolute',
+    top: '0px',
+    right: '40px',
+  };
+
+  // Filter data based on selected time range
+  const filteredLabels = data.labels.slice(timeRange[0], timeRange[1] + 1);
+  const filteredDataPoints = data.datasets[0].data.slice(timeRange[0], timeRange[1] + 1);
+  const filteredData = {
+    labels: filteredLabels,
+    datasets: [
+      {
+        label: 'My First dataset',
+        data: filteredDataPoints,
+        fill: false,
+        backgroundColor: 'rgba(75,192,192,0.2)',
+        borderColor: 'rgba(75,192,192,1)',
+      },
+    ],
   };
 
   return (
@@ -206,8 +281,13 @@ const GraphWidget = () => {
           <MenuItem onClick={handleClose}>Generate Report</MenuItem>
           <MenuItem onClick={handleClose}>About</MenuItem>
         </Menu>
+        {isZoomed && (
+          <IconButton style={resetZoomButtonStyle} onClick={resetZoom}>
+            <RotateLeftRoundedIcon />
+          </IconButton>
+        )}
         <hr style={hrStyle} />
-        <Line data={data} options={options} />
+        <Line data={filteredData} options={options} ref={chartRef} />
       </div>
     </div>
   );

@@ -1,0 +1,71 @@
+/* App.css or style.css */
+
+
+/* body {
+    background-image: url('./background.jpg'); 
+    color: white; 
+  } */
+  
+  .login-container {
+    width: 350px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    backdrop-filter: blur(8px);
+    
+  }
+  
+  h2 {
+    text-align: center;
+  }
+  
+  .flex{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .check {
+    display: flex;
+    justify-content: space-around;
+    /* border: 2px solid black; */
+    }
+  
+  
+  .green{
+    color: #4CAF50;
+  }
+  
+  
+  input[type="email"],
+  input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+  }
+  
+  input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  button[type="submit"] {
+    background-color: #4CAF50;
+    color: hsl(0, 100%, 99%);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  a {
+    color: #4CAF50;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  

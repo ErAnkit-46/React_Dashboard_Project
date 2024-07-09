@@ -25,6 +25,7 @@ import GraphWidget from './GraphWidget.js';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import Slider from '@mui/material/Slider';
 import FilterAltTwoToneIcon from '@mui/icons-material/FilterAltTwoTone';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 const drawerWidth = 170;
 
@@ -64,14 +65,6 @@ const AppBar = styled(MuiAppBar, {
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
   }),
 }));
 
@@ -157,7 +150,7 @@ const SearchBar = ({ expanded, onToggleSearch }) => {
           width: expanded ? '220px' : '0px',
           transition: 'width 0.3s ease',
           overflow: 'hidden',
-	  mb: '21px',
+          mb: '21px',
         }}
         placeholder="Search..."
         inputProps={{ 'aria-label': 'search' }}
@@ -248,8 +241,8 @@ const TimeRangeFilterBar = ({ timeRange, handleSliderChange, handleClose }) => {
               },
               '& .MuiSlider-thumb': {
                 backgroundColor: '#FF0000',
-		height: '12px',
-		width: '12px',
+                height: '12px',
+                width: '12px',
               },
               '& .MuiSlider-valueLabel': {
                 backgroundColor: 'transparent',
@@ -331,7 +324,7 @@ export default function MiniDrawer() {
             color="inherit"
             aria-label={open ? "close drawer" : "open drawer"}
             onClick={open ? handleDrawerClose : handleDrawerOpen}
-	    sx={{ mb: '25px' }}
+            sx={{ mb: '25px' }}
           >
             {open ? <ChevronLeftIcon /> : <MenuIcon />}
           </IconButton>
@@ -352,7 +345,7 @@ export default function MiniDrawer() {
             color="inherit"
             onClick={() => setSearchExpanded(!searchExpanded)}
             aria-label="toggle search"
-	    sx={{ mb: '25px' }}
+            sx={{ mb: '25px' }}
           >
             <SearchTwoToneIcon />
           </IconButton>
@@ -360,10 +353,20 @@ export default function MiniDrawer() {
             color="inherit"
             onClick={handleToggleTimeFilter}
             aria-label="toggle filter"
-	    sx={{ mb: '25px' }}
+            sx={{ mb: '25px' }}
           >
             <FilterAltTwoToneIcon />
           </IconButton>
+
+	   <IconButton
+            color="inherit"
+            onClick={handleToggleTimeFilter}
+            aria-label="toggle filter"
+            sx={{ mb: '25px' }}
+          >
+            <NotificationsIcon />
+          </IconButton>
+
         </Toolbar>
       </AppBar>
       {showTimeFilter && (
@@ -386,7 +389,7 @@ export default function MiniDrawer() {
             </ListItem>
           ))}
         </List>
-	<Divider sx={{ mt: 32.1 }} />
+        <Divider sx={{ mt: 32.1 }} />
         <List sx={{ mt: -1, mb: -1 }}>
           {['My Profile'].map((text) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
@@ -439,7 +442,7 @@ export default function MiniDrawer() {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Box>
-          <GraphWidget />
+          <GraphWidget timeRange={timeRange} />
         </Box>
       </Box>
     </Box>
