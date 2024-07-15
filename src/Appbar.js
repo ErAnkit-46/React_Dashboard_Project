@@ -10,7 +10,6 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -26,6 +25,8 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import Slider from '@mui/material/Slider';
 import FilterAltTwoToneIcon from '@mui/icons-material/FilterAltTwoTone';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import Dialog from '@mui/material/Dialog';
+import SettingsPopup from './SettingsPopup';
 
 const drawerWidth = 170;
 
@@ -264,6 +265,8 @@ export default function MiniDrawer() {
   const [showTimeFilter, setShowTimeFilter] = useState(false);
   const [searchExpanded, setSearchExpanded] = React.useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [dialogOpen, setDialogOpen] = useState(false);
+
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -302,6 +305,14 @@ export default function MiniDrawer() {
 
   const handleToggleSearch = (expanded) => {
     setSearchExpanded(expanded);
+  };
+
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
   };
 
   const formatTimeRange = (range) => {
@@ -415,7 +426,7 @@ export default function MiniDrawer() {
         </List>
         <List sx={{ mt: -1, mb: -2 }}>
           {['Settings'].map((text) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+            <ListItem key={text} disablePadding button onClick={handleDialogOpen} sx={{ display: 'block' }}>
               <ListItemButton
                 sx={{
                   minHeight: 20,
@@ -432,15 +443,19 @@ export default function MiniDrawer() {
                     ml: 0.7,
                   }}
                 />
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary="Settings" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
+	
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Box>
+	  <Dialog open={dialogOpen} onClose={handleDialogClose}>
+             <SettingsPopup open={dialogOpen} onClose={handleDialogClose} />
+          </Dialog>
           <GraphWidget timeRange={timeRange} />
         </Box>
       </Box>

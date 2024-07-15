@@ -26,6 +26,8 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import Slider from '@mui/material/Slider';
 import FilterAltTwoToneIcon from '@mui/icons-material/FilterAltTwoTone';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+
 
 const drawerWidth = 170;
 
@@ -360,7 +362,6 @@ export default function MiniDrawer() {
 
 	   <IconButton
             color="inherit"
-            onClick={handleToggleTimeFilter}
             aria-label="toggle filter"
             sx={{ mb: '25px' }}
           >
@@ -438,6 +439,7 @@ export default function MiniDrawer() {
             </ListItem>
           ))}
         </List>
+	
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
