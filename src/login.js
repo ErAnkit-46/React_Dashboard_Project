@@ -150,7 +150,7 @@ function Login() {
             }}
           />
           <FontAwesomeIcon
-            icon={showPassword ? faEyeSlash : faEye}
+            icon={showPassword ? faEye : faEyeSlash }
             onClick={toggleShowPassword}
             style={{
               position: 'absolute',

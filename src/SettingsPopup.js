@@ -36,7 +36,7 @@ import DeleteAccountContent from './DeleteAccountContent';
 import ChangePasswordContent from './ChangePasswordContent';
 import { useNavigate } from 'react-router-dom';
 import { MyProfileContent } from './MyProfileContent';
-
+import { ThemeSettings } from './ThemeSettings';
 
 const SettingsPopup = ({ open, onClose }) => {
   const [selectedItem, setSelectedItem] = useState('General');
@@ -174,60 +174,15 @@ const SettingsPopup = ({ open, onClose }) => {
                   </Select>
                 </FormControl>
               </Box>
-            ) : selectedItem === 'Appearance' ? (
-              <Box display="flex" alignItems="center" flexDirection="column" mt={2}>
-                <Typography variant="h6">Appearance Settings</Typography>
-                <Box mt={2}>
-                  <Box>
-                    <Typography variant="subtitle1" sx={{ color: '#B0BEC5', marginBottom: '2px', marginRight: '255px' }}>MODES:</Typography>
-                    <RadioGroup
-                      aria-label="theme"
-                      name="theme"
-                      value={themeMode}
-                      onChange={handleThemeChange}
-                    >
-                      <FormControlLabel
-                        value="dark"
-                        control={<Radio sx={{ color: '#FFFFFF' }} />}
-                        label="Dark Mode"
-                      />
-                      <FormControlLabel
-                        value="light"
-                        control={<Radio sx={{ color: '#FFFFFF' }} />}
-                        label="Light Mode"
-                      />
-                      <FormControlLabel
-                        value="Use System Default"
-                        control={<Radio sx={{ color: '#FFFFFF' }} />}
-                        label="Use System Default"
-                      />
-                    </RadioGroup>
-                  </Box>
-                </Box>
-                <Box mt={4}>
-                  <Box>
-                    <Typography variant="subtitle1" sx={{ color: '#B0BEC5', marginBottom: '2px' }}>ACCESSIBILITY MODES:</Typography>
-                    <RadioGroup
-                      aria-label="theme"
-                      name="theme"
-                      value={themeMode}
-                      onChange={handleThemeChange}
-                    >
-                      <FormControlLabel
-                        value="High contrast light"
-                        control={<Radio sx={{ color: '#FFFFFF' }} />}
-                        label="High contrast light"
-                      />
-                      <FormControlLabel
-                        value="High contrast dark"
-                        control={<Radio sx={{ color: '#FFFFFF' }} />}
-                        label="High contrast dark"
-                      />
-                    </RadioGroup>
-                  </Box>
-                </Box>
+        	
+        ) : selectedItem === 'Appearance' ? (
+              <Box>
+                <Typography variant="h6">Appearance Content</Typography>
+                <ThemeSettings />
               </Box>
-            ) : selectedItem === 'Privacy' ? (
+
+
+	    ) : selectedItem === 'Privacy' ? (
               <Box display="flex" alignItems="flex-start" flexDirection="column" mt={0}>
                 <Typography variant="h6" sx={{ textAlign: 'center' }}>Privacy Settings</Typography>
                 <ListItem button onClick={() => handleListItemClick('Change Password')} 

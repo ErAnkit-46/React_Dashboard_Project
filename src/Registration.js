@@ -1,74 +1,175 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-// import './Registration.css';
 
-function Registration() {
+const RegistrationForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [username, setUsername] = useState('');
 
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Handle login logic here
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Perform registration logic here (e.g., send data to a backend server)
     console.log('Email:', email);
     console.log('Password:', password);
-    navigate('/');
-    // window.location.href = 'http://192.168.56.1:3001';
+    console.log('Confirm Password:', confirmPassword);
+    console.log('Username:', username);
   };
 
   return (
-    <div className="login-container">
+    <div
+      style={{
+        maxWidth: '400px',
+        margin: '40px auto',
+        padding: '20px',
+        border: '1px solid #ddd',
+        borderRadius: '10px',
+        boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+        marginTop: '130px',
+        backdropFilter: 'blur(5px)', // Use camelCase and no semicolon
+      }}
+    >
       <form onSubmit={handleSubmit}>
-        <h2>New Resistration</h2>
-        <div className="form-group">
-          <label htmlFor="email">Email:</label>
+        <h2
+          style={{
+            fontSize: '24px',
+            fontWeight: 'bold',
+            marginBottom: '20px'
+          }}
+        >
+          New Registration
+        </h2>
+        <div
+          style={{
+            marginBottom: '20px'
+          }}
+        >
+          <label
+            htmlFor="username"
+            style={{
+              display: 'block',
+              marginBottom: '10px',
+            }}
+          >
+            Username:
+          </label>
+          <input
+            type="text"
+            placeholder="Enter Username"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            style={{
+              width: '95%',
+              padding: '10px',
+              fontSize: '16px',
+              border: '1px solid #ccc',
+              borderRadius: '5px'
+            }}
+            required
+          />
+        </div>
+        <div
+          style={{
+            marginBottom: '20px'
+          }}
+        >
+          <label
+            htmlFor="email"
+            style={{
+              display: 'block',
+              marginBottom: '10px',
+            }}
+          >
+            Email:
+          </label>
           <input
             type="email"
+            placeholder="Enter email address"
             id="email"
-            placeholder='Enter email address'
             value={email}
-            onChange={handleEmailChange}
-            // required
+            onChange={(e) => setEmail(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '10px',
+              fontSize: '16px',
+              border: '1px solid #ccc',
+            }}
+            required
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="password">Password:</label>
+        <div
+          style={{
+            marginBottom: '20px',
+          }}
+        >
+          <label
+            htmlFor="password">Password:
+          </label>
           <input
             type="password"
             id="password"
-            placeholder='Enter password'  
+            placeholder="Enter Password"
             value={password}
-            onChange={handlePasswordChange}
-            // required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Confirm Password:</label>
-          <input
-            type="password"
-            id="password"
-            placeholder='Re-enter password'  
-            value={password}
-            onChange={handlePasswordChange}
-            // required
-          />
-        </div>
+            onChange={(e) => setPassword(e.target.value)}
+            style={{
+              width: '95%',
+              padding: '10px',
+              fontSize: '16px',
+              border: '1px solid #ccc',
+              borderRadius: '5px'
 
-        
-        <button type="submit"><a href="/"></a>Resister</button>
-       
+            }}
+            required
+          />
+        </div>
+        <div
+          style={{
+            marginBottom: '18px',
+          }}
+        >
+          <label
+            htmlFor="confirmPassword"
+            style={{
+              display: 'block',
+              marginBottom: '8px',
+            }}
+          >
+            Confirm Password:
+          </label>
+          <input
+            type="password"
+            id="confirmPassword"
+            placeholder="Re-enter password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            style={{
+              width: '95%',
+              padding: '10px',
+              fontSize: '16px',
+              border: '1px solid #ccc',
+              borderRadius: '5px'
+            }}
+            required
+          />
+        </div>
+        <button
+          type="submit"
+          style={{
+            backgroundColor: '#4CAF50',
+            color: '#fff',
+            padding: '10px 20px',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            // marginBottom:'5px'
+          }}
+        >
+          Register
+        </button>
       </form>
     </div>
   );
-}
+};
 
+export default RegistrationForm;
 
-export default Registration;

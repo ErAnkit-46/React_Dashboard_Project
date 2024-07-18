@@ -329,7 +329,7 @@ export default function MiniDrawer() {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open} sx={{ backgroundColor: "#724385", height: '45px' }}>
+      <AppBar position="fixed" open={open} sx={{ backgroundColor: "#724385", height: '45px',padding: 0, overflow: 'hidden', boxSizing: 'border-box'  }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -387,10 +387,10 @@ export default function MiniDrawer() {
       )}
       <Drawer variant="permanent" open={open}>
         <DrawerHeader />
-        <List>
+        <List sx={{ mt: -3, mb: -2,}}>
           {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
             <ListItem key={text} disablePadding>
-              <ListItemButton>
+              <ListItemButton sx={{width:'20px'}}>
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                 </ListItemIcon>
@@ -399,34 +399,10 @@ export default function MiniDrawer() {
             </ListItem>
           ))}
         </List>
-        <Divider sx={{ mt: 32.1 }} />
-        <List sx={{ mt: -1, mb: -1 }}>
-          {['My Profile'].map((text) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 10,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 1.5,
-                }}
-              >
-                <AccountCircleTwoToneIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 2 : 'auto',
-                    justifyContent: 'center',
-                    fontSize: 23,
-                    ml: 0.7,
-                  }}
-                />
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <List sx={{ mt: -1, mb: -2 }}>
+        <Divider sx={{ mt: 37, width: '100%', maxWidth: '100%', flexShrink: 0, transform: 'translateZ(0)', }} />
+        <List sx={{ mt: -1, mb: -2, width: '100%', maxWidth: '100%', boxSizing: 'border-box', }}>
           {['Settings'].map((text) => (
-            <ListItem key={text} disablePadding button onClick={handleDialogOpen} sx={{ display: 'block' }}>
+            <ListItem key={text} disablePadding button onClick={handleDialogOpen} sx={{ display: 'block', width: '100%',boxSizing: 'border-box'}}>
               <ListItemButton
                 sx={{
                   minHeight: 20,
@@ -441,6 +417,8 @@ export default function MiniDrawer() {
                     justifyContent: 'center',
                     fontSize: 23,
                     ml: 0.7,
+		    position: 'relative',
+		    transform: 'translateZ(0)',
                   }}
                 />
                 <ListItemText primary="Settings" sx={{ opacity: open ? 1 : 0 }} />

@@ -13,6 +13,7 @@ const Login = () => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [errorField, setErrorField] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,7 +41,10 @@ const Login = () => {
     if (validationMessage) {
       setErrorField(field);
       setShowTooltip(true);
-    } else setShowTooltip(false);
+    } else {
+      setErrorField('');
+      setShowTooltip(false);
+    }
   };
 
   const validatePassword = (password) => {
@@ -69,7 +73,13 @@ const Login = () => {
     console.log('Current Password:', currentPassword);
     console.log('New Password:', password);
     console.log('Confirm Password:', confirmPassword);
-    navigate('/dash');
+
+    // Display success message
+    setSuccessMessage('Saved Successfully');
+    setTimeout(() => {
+      setSuccessMessage('');
+      navigate('/dash');
+    }, 2000);
   };
 
   const handleReset = () => {
@@ -79,6 +89,7 @@ const Login = () => {
     setErrorMessage('');
     setErrorField('');
     setShowTooltip(false);
+    setSuccessMessage('');
   };
 
   const errorStyle = {
@@ -88,6 +99,12 @@ const Login = () => {
     position: 'absolute',
     top: '80%',
     left: '0',
+  };
+
+  const successStyle = {
+    color: 'green',
+    fontSize: '14px',
+    marginTop: '10px',
   };
 
   const buttonStyle = {
@@ -142,8 +159,9 @@ const Login = () => {
       {renderInputField('currentPassword', 'password', currentPassword, (e) => setCurrentPassword(e.target.value), () => setShowCurrentPassword(!showCurrentPassword), showCurrentPassword, errorField === 'currentPassword', 'Current Password')}
       {renderInputField('password', 'password', password, handlePasswordChange, () => setShowNewPassword(!showNewPassword), showNewPassword, errorField === 'password', 'New Password')}
       {renderInputField('confirmPassword', 'password', confirmPassword, handleConfirmPasswordChange, () => setShowConfirmPassword(!showConfirmPassword), showConfirmPassword, errorField === 'confirmPassword', 'Verify New Password')}
-      <button type="submit" onClick={handleReset}style={buttonStyle}>Save</button>
+      <button type="submit" style={buttonStyle}>Save</button>
       <button type="button" onClick={handleReset} style={buttonStyle}>Reset</button>
+      {successMessage && <div style={successStyle}>{successMessage}</div>}
     </form>
   );
 };

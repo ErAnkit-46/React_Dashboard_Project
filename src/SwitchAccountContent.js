@@ -1,31 +1,62 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import { UserContext } from './MyProfileContent';
+import { Box, Divider } from '@mui/material';
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 
 function SwitchAccount() {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
+  const { email } = useContext(UserContext);
+  const navigate = useNavigate();
+  const [isActive, setIsActive] = useState(true); // You can update this state based on the actual user status
 
-  useEffect(() => {
-    const storedEmail = localStorage.getItem('loggedInUserEmail');
-    const storedUsername = localStorage.getItem('loggedInUsername');
-    if (storedEmail && storedUsername) {
-      setEmail(storedEmail);
-      setUsername(storedUsername);
-    }
-  }, []);
+  const handleSwitchAccount = () => {
+    navigate('/');
+  };
 
   return (
-    <div className="switch-account-container">
-      <div className="account-info">
-        <span className="account-name">{username}</span>
-        <span className="account-email">{email}</span>
-        <span className="account-status">
-          <svg className="green-tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="green" width="18px" height="18px">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M9 16.2l-3.5-3.5 1.4-1.4L9 13.4l7.6-7.6 1.4 1.4z"/>
-          </svg>
-        </span>
-      </div>
-    </div>
+    <Box alignItems="flex-start" display="flex">
+      <List component="nav">
+        <ListItem
+          sx={{
+            color: '#ffffff',
+            marginLeft: '-16px',
+            width: '318px',
+            '&:hover': {
+              backgroundColor: '#3a475e',
+            },
+          }}
+        >
+          <ListItemText primary={email} sx={{ color: '#ffffff' }} />
+          {isActive ? (
+            <CheckCircleOutlineIcon sx={{ color: 'rgb(4, 255, 82)' }} />
+          ) : (
+            <CancelRoundedIcon sx={{ color: 'rgb(255, 0, 0)' }} /> // Set color to red for inactive state
+          )}
+        </ListItem>
+        <Divider />
+        <ListItem
+          button
+          sx={{
+            marginLeft: '-16px',
+            width: '318px',
+            color: '#ffffff',
+            '&:hover': {
+              backgroundColor: '#3a475e',
+            },
+          }}
+          onClick={handleSwitchAccount}
+        >
+          <ListItemText primary="Switch Account" sx={{ color: '#ffffff' }} />
+          <CompareArrowsIcon />
+        </ListItem>
+      </List>
+    </Box>
   );
 }
 
