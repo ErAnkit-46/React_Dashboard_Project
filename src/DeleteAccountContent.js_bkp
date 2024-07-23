@@ -1,24 +1,6 @@
 import React, { useState } from 'react';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import { Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import { styled } from '@mui/material/styles';
-
-const StyledTextField = styled(TextField)(({ theme }) => ({
-  '& .MuiOutlinedInput-root': {
-    '& fieldset': {
-      borderColor: '#ccc', // Default border color
-    },
-    '&:hover fieldset': {
-      borderColor: '#888', // Border color on hover
-    },
-    '&.Mui-focused fieldset': {
-      borderColor: '#000', // Border color when focused
-    },
-  },
-  marginBottom: theme.spacing(2), // Space between input boxes and other elements
-  width: '100%',
-  maxWidth: '400px', // Optional: Set a max width to control input size
-}));
 
 const DeleteAccount = () => {
   const [email, setEmail] = useState('');
@@ -41,23 +23,27 @@ const DeleteAccount = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <StyledTextField
+      <TextField
         margin="dense"
         id="email"
         label="Email Address"
         type="email"
+        fullWidth
         variant="outlined"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        style={{ marginBottom: '16px' }}
       />
-      <StyledTextField
+      <TextField
         margin="dense"
         id="password"
         label="Password"
         type="password"
+        fullWidth
         variant="outlined"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        style={{ marginBottom: '16px' }}
       />
       <Button
         variant="contained"

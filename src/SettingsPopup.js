@@ -37,6 +37,7 @@ import ChangePasswordContent from './ChangePasswordContent';
 import { useNavigate } from 'react-router-dom';
 import { MyProfileContent } from './MyProfileContent';
 import { ThemeSettings } from './ThemeSettings';
+import  Chatbox  from './Chatbox';
 
 const SettingsPopup = ({ open, onClose }) => {
   const [selectedItem, setSelectedItem] = useState('General');
@@ -126,6 +127,13 @@ const SettingsPopup = ({ open, onClose }) => {
                   <BorderColorRoundedIcon sx={{ marginRight: '8px' }} />
                   <ListItemText primary="Appearance" />
                 </ListItem>
+
+	        <Divider />
+                <ListItem button onClick={() => handleListItemClick('Chatbox')} sx={listItemStyle('Chatbox')}>
+                  <BorderColorRoundedIcon sx={{ marginRight: '8px' }} />
+                  <ListItemText primary="Chatbox" />
+                </ListItem>
+
                 <Divider />
                 <ListItem button onClick={() => handleListItemClick('Notifications')} sx={listItemStyle('Notifications')}>
                   <NotificationsNoneRoundedIcon sx={{ marginRight: '8px' }} />
@@ -179,6 +187,13 @@ const SettingsPopup = ({ open, onClose }) => {
               <Box>
                 <Typography variant="h6">Appearance Content</Typography>
                 <ThemeSettings />
+              </Box>
+
+
+	 ) : selectedItem === 'Chatbox' ? (
+              <Box>
+                <Typography variant="h6">Chat Content</Typography>
+                <Chatbox/>
               </Box>
 
 
