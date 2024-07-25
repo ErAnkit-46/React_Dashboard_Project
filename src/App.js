@@ -10,7 +10,7 @@ import { UserProvider } from './MyProfileContent';
 import { MyProfileContent } from './MyProfileContent';
 import { LanguageProvider } from './LanguageContext';
 import { ThemeProvider, ThemeSettings } from './ThemeSettings';
-import { registerUser } from './api';
+
 
 function App() {
   return (
