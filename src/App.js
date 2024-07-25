@@ -11,6 +11,7 @@ import { MyProfileContent } from './MyProfileContent';
 import { LanguageProvider } from './LanguageContext';
 import { ThemeProvider, ThemeSettings } from './ThemeSettings';
 
+
 function App() {
   return (
     <ThemeProvider>

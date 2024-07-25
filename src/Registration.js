@@ -6,9 +6,37 @@ const RegistrationForm = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [username, setUsername] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Perform registration logic here (e.g., send data to a backend server)
+    const userData = {
+      username,
+      email,
+      password,
+      confirmPassword
+    };
+  
+    try {
+      const response = await fetch('http://localhost:5000/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userData)
+      });
+  
+      if (response.ok) {
+        console.log('User registered successfully');
+        // Handle successful registration (e.g., show a success message)
+      } else {
+        console.error('Error registering user');
+        // Handle registration error (e.g., show an error message)
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle network error (e.g., show an error message)
+    }
+
     console.log('Email:', email);
     console.log('Password:', password);
     console.log('Confirm Password:', confirmPassword);

@@ -13,6 +13,7 @@ function Login() {
   const [showTooltip, setShowTooltip] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [errorField, setErrorField] = useState('');
+  const [userNotFound, setUserNotFound] = useState(false); // Initialize state
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -81,7 +82,7 @@ function Login() {
     return "";
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const emailValidationMessage = validateEmail(email);
     const passwordValidationMessage = validatePassword(password);
@@ -91,13 +92,32 @@ function Login() {
       setShowTooltip(true);
       return;
     }
-    // Handle login logic here
-    console.log('Email:', email);
-    console.log('Password:', password);
-    setUserEmail(email); // Set the user email in the context
-    navigate('/dash');
+  
+    // Check if user exists and login
+    try {
+      const response = await fetch('http://localhost:5000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      const data = await response.json();
+      if (response.status === 200) {
+        setUserEmail(email); // Set the user email in the context
+        navigate('/dash'); // Navigate to the dashboard
+      } else {
+        setUserNotFound(true);
+        setErrorMessage(data);
+        setShowTooltip(true);
+        setErrorField('email');
+      }
+    } catch (error) {
+      console.error('Error logging in:', error);
+    }
   };
-
+  
   const tooltipStyle = {
     position: 'absolute',
     marginTop: '-15px',
