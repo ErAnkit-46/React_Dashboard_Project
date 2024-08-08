@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Connect to MongoDB
-const db = process.env.MONGO_URI || 'mongodb+srv://admin:VaWVKBS6DbgTF1Ar@cluster0.nxrk7iz.mongodb.net';
+const db = process.env.MONGO_URI || 'mongodb+srv://akabhishek7294:fUkE9Dy0HjH7zxzW@login.ax6uvlr.mongodb.net/';
 mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
@@ -82,5 +82,5 @@ app.post('/api/login', async (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  console.log('Server running on port ${port}');
 });
