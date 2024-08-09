@@ -44,6 +44,8 @@ const SettingsPopup = ({ open, onClose }) => {
   const [language, setLanguage] = useState('en');
   const [themeMode, setThemeMode] = useState('dark');
   const [navigationHistory, setNavigationHistory] = useState(['General']);
+  const navigate = useNavigate();
+
   const listItemStyle = (item) => ({
     padding: '10px 10px',
     paddingTop: item === 'General' ? '0' : '8px',
@@ -86,6 +88,11 @@ const SettingsPopup = ({ open, onClose }) => {
       setNavigationHistory([...navigationHistory, item]); 
     }
   };
+
+const handleLogout = () => {
+  navigate('/'); // Redirect to login page
+
+};
 
   return (
     <Dialog
@@ -264,7 +271,7 @@ const SettingsPopup = ({ open, onClose }) => {
               </Box>
             )}
     <Box sx={{ position: 'absolute', bottom: 7, right: -3 }}>
-              <IconButton color="error" onClick={onClose}>
+              <IconButton color="error" onClick={handleLogout}>
                 <PowerSettingsNewRoundedIcon fontSize="large" />
               </IconButton>
             </Box>
@@ -276,4 +283,3 @@ const SettingsPopup = ({ open, onClose }) => {
 };
 
 export default SettingsPopup;
-

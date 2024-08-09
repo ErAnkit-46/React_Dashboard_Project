@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { IconButton, Box, Typography, Slider } from '@mui/material';
+import { IconButton, Box, Typography } from '@mui/material';
 import MicIcon from '@mui/icons-material/Mic';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -7,7 +7,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/system';
 import { CSSTransition } from 'react-transition-group';
 import { makeStyles } from '@mui/styles';
-
 
 const useStyles = makeStyles({
   '@keyframes appear': {
@@ -66,22 +65,6 @@ const Timer = styled(Typography)(({ theme }) => ({
   fontWeight: 'bold',
 }));
 
-const Waveform = styled(Slider)(({ theme }) => ({
-  width: '80px',
-  height: '10px',
-  marginLeft: '8px',
-  '& .MuiSlider-thumb': {
-    display: 'none',
-  },
-  '& .MuiSlider-rail': {
-    backgroundColor: '#606060',
-    opacity: 1,
-  },
-  '& .MuiSlider-track': {
-    backgroundColor: '#606060',
-  },
-}));
-
 const ShadowBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -102,8 +85,8 @@ const MicControls = ({ onRecordStart, onRecordStop, onPause, onResume }) => {
   const [timer, setTimer] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [pausedTime, setPausedTime] = useState(0); // Track paused time
-  const [audioPlaying, setAudioPlaying] = useState(false); // Track if audio is playing
+  const [pausedTime, setPausedTime] = useState(0);
+  const [audioPlaying, setAudioPlaying] = useState(false);
   const mediaRecorderRef = useRef(null);
   const audioRef = useRef(new Audio());
   const intervalRef = useRef(null);
@@ -111,11 +94,11 @@ const MicControls = ({ onRecordStart, onRecordStop, onPause, onResume }) => {
 
   useEffect(() => {
     if (paused) {
-      clearInterval(intervalRef.current); // Pause the timer when recording is paused
+      clearInterval(intervalRef.current);
     } else if (recording) {
       intervalRef.current = setInterval(() => {
         setTimer((prev) => prev + 1);
-      }, 1000); // Update timer every second
+      }, 1000);
     }
     return () => clearInterval(intervalRef.current);
   }, [recording, paused]);
@@ -124,7 +107,15 @@ const MicControls = ({ onRecordStart, onRecordStop, onPause, onResume }) => {
     audioRef.current.ontimeupdate = () => {
       setCurrentTime(audioRef.current.currentTime);
     };
-  }, []);
+    audioRef.current.onended = () => {
+      clearInterval(audioIntervalRef.current);
+      setTimer(duration);
+      setAudioPlaying(false);
+    };
+    audioRef.current.onloadedmetadata = () => {
+      setDuration(audioRef.current.duration);
+    };
+  }, [duration]);
 
   const handleStartRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -138,9 +129,6 @@ const MicControls = ({ onRecordStart, onRecordStop, onPause, onResume }) => {
         if (e.data.size > 0) {
           setBlob(e.data);
           audioRef.current.src = URL.createObjectURL(e.data);
-          audioRef.current.onloadedmetadata = () => {
-            setDuration(audioRef.current.duration);
-          };
         }
       };
 
@@ -150,7 +138,7 @@ const MicControls = ({ onRecordStart, onRecordStop, onPause, onResume }) => {
     setRecording(true);
     setPaused(false);
     setShowControls(true);
-    setTimer(pausedTime); // Continue from paused time
+    setTimer(pausedTime);
 
     if (onRecordStart) onRecordStart();
   };
@@ -162,15 +150,16 @@ const MicControls = ({ onRecordStart, onRecordStop, onPause, onResume }) => {
     setRecording(false);
     setPaused(false);
     clearInterval(intervalRef.current);
+    setTimer(0);
 
     if (onRecordStop) onRecordStop();
   };
 
   const handlePauseRecording = () => {
     if (mediaRecorderRef.current && recording && !paused) {
-      mediaRecorderRef.current.stop(); // Stop the recording
+      mediaRecorderRef.current.stop();
       setPaused(true);
-      setPausedTime(timer); // Save the paused time
+      setPausedTime(timer);
       clearInterval(intervalRef.current);
 
       if (onPause) onPause();
@@ -178,9 +167,9 @@ const MicControls = ({ onRecordStart, onRecordStop, onPause, onResume }) => {
   };
 
   const handleResumeRecording = () => {
-    if (!recording || !paused) return; // Check if not recording or not paused
+    if (!recording || !paused) return;
 
-    handleStartRecording(); // Restart recording from the paused time
+    handleStartRecording();
     setPaused(false);
 
     if (onResume) onResume();
@@ -198,10 +187,10 @@ const MicControls = ({ onRecordStart, onRecordStop, onPause, onResume }) => {
     setTimer(0);
     setCurrentTime(0);
     setDuration(0);
-    setPausedTime(0); // Reset paused time
-    setAudioPlaying(false); // Reset audio playing state
+    setPausedTime(0);
+    setAudioPlaying(false);
     clearInterval(intervalRef.current);
-    clearInterval(audioIntervalRef.current); // Clear the audio timer interval
+    clearInterval(audioIntervalRef.current);
   };
 
   const handlePlayPauseAudio = () => {
@@ -210,21 +199,27 @@ const MicControls = ({ onRecordStart, onRecordStop, onPause, onResume }) => {
         audioRef.current.pause();
         clearInterval(audioIntervalRef.current);
       } else {
-        audioRef.current.currentTime = 0; // Reset to start
-        setTimer(0); // Reset timer
+        audioRef.current.currentTime = 0;
+        setTimer(0);
         audioRef.current.play();
 
         audioIntervalRef.current = setInterval(() => {
-          setTimer((prev) => prev + 1);
-        }, 1000); // Start the timer when audio plays
+          setTimer((prev) => {
+            if (prev + 1 >= duration) {
+              clearInterval(audioIntervalRef.current);
+            }
+            return prev + 1;
+          });
+        }, 1000);
       }
-      setAudioPlaying(!audioPlaying); // Toggle the play/pause state
+      setAudioPlaying(!audioPlaying);
     }
   };
 
   const formatTime = (time) => {
+    if (isNaN(time) || !isFinite(time)) return '00:00';
     const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
+    const seconds = Math.floor(time % 60);
     return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
@@ -265,22 +260,10 @@ const MicControls = ({ onRecordStart, onRecordStop, onPause, onResume }) => {
                   )}
                 </IconButton>
                 <Timer>{formatTime(timer)}</Timer>
-                <Waveform
-                  value={currentTime}
-                  min={0}
-                  max={duration}
-                  onChange={handleSliderChange}
-                />
               </ShadowBox>
             ) : (
               <>
                 <Timer>{formatTime(timer)}</Timer>
-                <Waveform
-                  value={currentTime}
-                  min={0}
-                  max={duration}
-                  onChange={handleSliderChange}
-                />
               </>
             )}
             {paused ? (

@@ -9,7 +9,7 @@ import SettingsPopup from './SettingsPopup';
 import { UserProvider } from './MyProfileContent';
 import { MyProfileContent } from './MyProfileContent';
 import { LanguageProvider } from './LanguageContext';
-import { ThemeProvider, ThemeSettings } from './ThemeSettings';
+import { ThemeProvider } from './ThemeSettings';
 
 
 function App() {
@@ -26,7 +26,6 @@ function App() {
               <Route path="/" element={<SettingsPopup open={true} onClose={() => {}} />} />
               <Route path="/profile" element={<MyProfileContent />} />
             </Routes>
-            <ThemeSettings />
           </BrowserRouter>
         </UserProvider>
       </LanguageProvider>

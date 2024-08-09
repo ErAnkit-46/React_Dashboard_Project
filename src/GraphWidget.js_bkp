@@ -1,15 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { Chart as ChartJS,  CategoryScale,  LinearScale,  PointElement,  LineElement,  Title,  Tooltip,  Legend,} from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded';
 import RotateLeftRoundedIcon from '@mui/icons-material/RotateLeftRounded';
-import MoreVertMenu from './MoreVertMenu'; // Import MoreVertMenu
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, zoomPlugin);
 
 const GraphWidget = ({ timeRange }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [dropdownAnchorEl, setDropdownAnchorEl] = useState(null);
   const [data, setData] = useState({
     labels: [],
     datasets: [
@@ -23,8 +27,22 @@ const GraphWidget = ({ timeRange }) => {
     ],
   });
   const [isZoomed, setIsZoomed] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null); // State for menu anchor
   const chartRef = useRef(null);
+  const openMenu = Boolean(anchorEl);
+  const openDropdown = Boolean(dropdownAnchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setDropdownAnchorEl(null);
+  };
+
+  const handleDropdownClick = (event) => {
+    setDropdownAnchorEl(event.currentTarget);
+  };
 
   // Function to generate labels for past 30 minutes in hh:mm format at 1-minute intervals in IST
   const generateTimeLabels = (startTime, endTime) => {
@@ -191,15 +209,6 @@ const GraphWidget = ({ timeRange }) => {
     right: '40px',
   };
 
-  // Menu handlers
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
   // Filter data based on selected time range
   const filteredLabels = data.labels.slice(timeRange[0], timeRange[1] + 1);
   const filteredDataPoints = data.datasets[0].data.slice(timeRange[0], timeRange[1] + 1);
@@ -220,11 +229,49 @@ const GraphWidget = ({ timeRange }) => {
     <div style={{ position: 'relative' }}>
       <div style={boxStyle}>
         <h2 style={titleStyle}>Data Graph Chart</h2>
-        <MoreVertMenu
+        <IconButton style={settingsButtonStyle} onClick={handleClick}>
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
           anchorEl={anchorEl}
-          handleMenuOpen={handleMenuOpen}
-          handleMenuClose={handleMenuClose}
-        />
+          open={openMenu}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+        >
+          <MenuItem onClick={handleClose}>
+            Widget Settings
+            <IconButton
+              onClick={handleDropdownClick}
+              aria-haspopup="true"
+              aria-owns={openDropdown ? 'dropright-menu' : undefined}
+              size="small"
+              style={{ marginLeft: '3px', color: 'black' }}
+            >
+              <ArrowRightRoundedIcon sx={{ fontSize: 20 }} />
+            </IconButton>
+          </MenuItem>
+          <MenuItem onClick={handleClose}>Compare Graph</MenuItem>
+          <MenuItem onClick={handleClose}>
+            Generate Report
+            <IconButton
+              onClick={handleDropdownClick}
+              aria-haspopup="true"
+              aria-owns={openDropdown ? 'dropright-menu' : undefined}
+              size="small"
+              style={{ marginLeft: '3px', color: 'black' }}
+            >
+              <ArrowRightRoundedIcon sx={{ fontSize: 20 }} />
+            </IconButton>
+            </MenuItem>
+          <MenuItem onClick={handleClose}>About</MenuItem>
+        </Menu>
         {isZoomed && (
           <IconButton style={resetZoomButtonStyle} onClick={resetZoom}>
             <RotateLeftRoundedIcon />
@@ -238,3 +285,4 @@ const GraphWidget = ({ timeRange }) => {
 };
 
 export default GraphWidget;
+

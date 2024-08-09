@@ -15,6 +15,7 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import MicControls from './mic'; // Import the MicControls component
+import ChatMoreVertMenu from './ChatMoreVertMenu'; 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -137,6 +138,10 @@ const Chatbox = ({ currentUser, profilePictureUrl }) => {
 
   const isSendButtonEnabled = message.trim() !== '' || selectedFiles.length > 0;
 
+  const handleMoreVertOptionSelect = (option) => {
+    console.log(`Selected option: ${option}`);
+  };
+
   return (
     <Box sx={{ width: '100%', maxWidth: 480, margin: 'auto', mt: 5 }}>
       <Paper sx={{ p: 2 }}>
@@ -174,7 +179,7 @@ const Chatbox = ({ currentUser, profilePictureUrl }) => {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>{recipientEmail}</Typography>
           <IconButton sx={{ ml: 1 }} onClick={handleCloseChat}><CloseIcon /></IconButton>
           <IconButton sx={{ ml: 1 }}><SearchIcon /></IconButton>
-          <IconButton sx={{ ml: 1 }}><MoreVertIcon /></IconButton>
+          <ChatMoreVertMenu onOptionSelect={handleMoreVertOptionSelect} />
         </DialogTitle>
         <DialogContent sx={{ p: 0, backgroundImage: 'url(/path/to/your/background/image)', backgroundSize: 'cover', minHeight: 400 }}>
           <List sx={{ maxHeight: 400, overflow: 'auto' }}>
@@ -280,6 +285,7 @@ const Chatbox = ({ currentUser, profilePictureUrl }) => {
               )}
               <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                 <IconButton onClick={handleEmojiOpen}><InsertEmoticonIcon /></IconButton>
+                <Divider orientation="Horizontal" sx={{ height: 40, mx: 1 }} />
                 <InputBase
                   sx={{ ml: 1, flex: 1, mr: 1 }}
                   placeholder="Type a message"

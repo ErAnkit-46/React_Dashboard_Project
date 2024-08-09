@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const RegistrationForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [username, setUsername] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,46 +41,54 @@ const RegistrationForm = () => {
       console.error('Error:', error);
       // Handle network error (e.g., show an error message)
     }
-
+    // Perform registration logic here (e.g., send data to a backend server)
     console.log('Email:', email);
     console.log('Password:', password);
     console.log('Confirm Password:', confirmPassword);
     console.log('Username:', username);
   };
 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleShowConfirmPassword = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   return (
     <div
       style={{
-        maxWidth: '400px',
+        maxWidth: '390px',
         margin: '40px auto',
         padding: '20px',
         border: '1px solid #ddd',
         borderRadius: '10px',
         boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
         marginTop: '130px',
-        backdropFilter: 'blur(5px)', // Use camelCase and no semicolon
+        backdropFilter: 'blur(5px)',
+        height: '500px'
       }}
     >
       <form onSubmit={handleSubmit}>
         <h2
           style={{
-            fontSize: '24px',
             fontWeight: 'bold',
-            marginBottom: '20px'
+            marginBottom: '15px'
           }}
         >
           New Registration
         </h2>
         <div
           style={{
-            marginBottom: '20px'
+            marginBottom: '15px'
           }}
         >
           <label
             htmlFor="username"
             style={{
               display: 'block',
-              marginBottom: '10px',
+              marginBottom: '5px',
             }}
           >
             Username:
@@ -89,7 +102,6 @@ const RegistrationForm = () => {
             style={{
               width: '95%',
               padding: '10px',
-              fontSize: '16px',
               border: '1px solid #ccc',
               borderRadius: '5px'
             }}
@@ -98,14 +110,14 @@ const RegistrationForm = () => {
         </div>
         <div
           style={{
-            marginBottom: '20px'
+            marginBottom: '15px'
           }}
         >
           <label
             htmlFor="email"
             style={{
               display: 'block',
-              marginBottom: '10px',
+              marginBottom: '5px',
             }}
           >
             Email:
@@ -119,7 +131,6 @@ const RegistrationForm = () => {
             style={{
               width: '100%',
               padding: '10px',
-              fontSize: '16px',
               border: '1px solid #ccc',
             }}
             required
@@ -127,59 +138,93 @@ const RegistrationForm = () => {
         </div>
         <div
           style={{
-            marginBottom: '20px',
+            marginBottom: '16px',
+            position: 'relative' // Add relative positioning
           }}
         >
-          <label
-            htmlFor="password">Password:
-          </label>
+          <label htmlFor="password">Password:</label>
           <input
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             id="password"
             placeholder="Enter Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             style={{
-              width: '95%',
+              width: '87%',
               padding: '10px',
-              fontSize: '16px',
               border: '1px solid #ccc',
-              borderRadius: '5px'
-
+              borderRadius: '5px',
+              marginBottom: '5px',
+              paddingRight: '40px' // Add padding to the right
             }}
             required
+          />
+          <FontAwesomeIcon
+            icon={showPassword ? faEye : faEyeSlash}
+            onClick={toggleShowPassword}
+            style={{
+              position: 'absolute',
+              right: '10px',
+              top: '63%',
+              transform: 'translateY(-50%)',
+              color: '#000000',
+              cursor: 'pointer',
+            }}
           />
         </div>
         <div
           style={{
-            marginBottom: '18px',
+            marginBottom: '16px',
+            position: 'relative' // Add relative positioning
           }}
         >
           <label
             htmlFor="confirmPassword"
             style={{
               display: 'block',
-              marginBottom: '8px',
+              marginBottom: '6px',
             }}
           >
             Confirm Password:
           </label>
           <input
-            type="password"
+            type={showConfirmPassword ? 'text' : 'password'}
             id="confirmPassword"
             placeholder="Re-enter password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             style={{
-              width: '95%',
+              width: '87%',
               padding: '10px',
-              fontSize: '16px',
               border: '1px solid #ccc',
-              borderRadius: '5px'
+              borderRadius: '5px',
+              paddingRight: '40px' // Add padding to the right
             }}
             required
           />
+          <FontAwesomeIcon
+            icon={showConfirmPassword ? faEye : faEyeSlash}
+            onClick={toggleShowConfirmPassword}
+            style={{
+              position: 'absolute',
+              right: '10px',
+              top: '68%',
+              transform: 'translateY(-50%)',
+              color: '#000000',
+              cursor: 'pointer',
+            }}
+          />
         </div>
+        {error && (
+          <div
+            style={{
+              color: 'red',
+              marginBottom: '20px'
+            }}
+          >
+            {error}
+          </div>
+        )}
         <button
           type="submit"
           style={{
@@ -189,7 +234,7 @@ const RegistrationForm = () => {
             border: 'none',
             borderRadius: '5px',
             cursor: 'pointer',
-            // marginBottom:'5px'
+            marginTop: '25px',
           }}
         >
           Register
@@ -200,4 +245,3 @@ const RegistrationForm = () => {
 };
 
 export default RegistrationForm;
-

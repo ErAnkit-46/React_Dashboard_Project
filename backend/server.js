@@ -13,8 +13,9 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Connect to MongoDB
-const db = process.env.MONGO_URI || 'mongodb+srv://admin:VaWVKBS6DbgTF1Ar@cluster0.nxrk7iz.mongodb.net';
-mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
+const db = process.env.MONGO_URI || 'mongodb+srv://ErAnkit-46:QhUH1DYI93KawfH4@cluster46.obcgbfg.mongodb.net';
+
+mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true, tls: true, tlsAllowInvalidCertificates: true })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
 
@@ -27,6 +28,17 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model('User', userSchema);
+
+// Define Message Schema
+const messageSchema = new mongoose.Schema({
+  sender: String,
+  recipient: String,
+  content: String,
+  timestamp: { type: Date, default: Date.now },
+  files: [String],
+});
+
+const Message = mongoose.model('Message', messageSchema);
 
 // API endpoint to register a new user
 app.post('/api/register', async (req, res) => {
@@ -53,7 +65,6 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-
 // API endpoint to check if user exists and login
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
@@ -79,6 +90,26 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+// API endpoint to send a message
+app.post('/api/messages', async (req, res) => {
+  try {
+    const newMessage = new Message(req.body);
+    await newMessage.save();
+    res.status(201).json(newMessage);
+  } catch (error) {
+    res.status(400).json({ error: 'Error saving message' });
+  }
+});
+
+// API endpoint to get messages for a recipient
+app.get('/api/messages/:recipientEmail', async (req, res) => {
+  try {
+    const messages = await Message.find({ recipient: req.params.recipientEmail }).sort({ timestamp: 1 });
+    res.json(messages);
+  } catch (error) {
+    res.status(400).json({ error: 'Error fetching messages' });
+  }
+});
 
 // Start the server
 app.listen(port, () => {
