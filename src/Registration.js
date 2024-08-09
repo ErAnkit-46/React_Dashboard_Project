@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+<<<<<<< HEAD
+=======
+
+>>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
 
 const RegistrationForm = () => {
   const [email, setEmail] = useState('');
@@ -10,38 +14,57 @@ const RegistrationForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
+<<<<<<< HEAD
+=======
+  const [message, setMessage] = useState('');
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
+>>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      setError('Password do not match');
+      setShowErrorPopup(true);
+      setTimeout(() => setShowErrorPopup(false), 5000); // Hide after 5 seconds
+      return;
+    }
+
     // Perform registration logic here (e.g., send data to a backend server)
     const userData = {
       username,
       email,
       password,
-      confirmPassword
+      confirmPassword,
     };
-  
+
     try {
       const response = await fetch('http://localhost:5000/api/register', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userData)
+        body: JSON.stringify(userData),
       });
-  
+
       if (response.ok) {
-        console.log('User registered successfully');
-        // Handle successful registration (e.g., show a success message)
+        setMessage('User registered successfully');
+        setError('');
       } else {
-        console.error('Error registering user');
-        // Handle registration error (e.g., show an error message)
+        setMessage('Error registering user');
+        setError('');
       }
     } catch (error) {
-      console.error('Error:', error);
-      // Handle network error (e.g., show an error message)
+      setMessage('Error: ' + error.message);
+      alert(error.message);
+      setError('');
     }
+<<<<<<< HEAD
     // Perform registration logic here (e.g., send data to a backend server)
+=======
+
+    // Log the user input
+>>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
     console.log('Email:', email);
     console.log('Password:', password);
     console.log('Confirm Password:', confirmPassword);
@@ -67,21 +90,33 @@ const RegistrationForm = () => {
         boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
         marginTop: '130px',
         backdropFilter: 'blur(5px)',
+<<<<<<< HEAD
         height: '500px'
+=======
+        height: 'auto'
+>>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
       }}
     >
       <form onSubmit={handleSubmit}>
         <h2
           style={{
             fontWeight: 'bold',
+<<<<<<< HEAD
             marginBottom: '15px'
+=======
+            marginBottom: '15px',
+>>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
           }}
         >
           New Registration
         </h2>
         <div
           style={{
+<<<<<<< HEAD
             marginBottom: '15px'
+=======
+            marginBottom: '15px',
+>>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
           }}
         >
           <label
@@ -103,14 +138,18 @@ const RegistrationForm = () => {
               width: '95%',
               padding: '10px',
               border: '1px solid #ccc',
-              borderRadius: '5px'
+              borderRadius: '5px',
             }}
             required
           />
         </div>
         <div
           style={{
+<<<<<<< HEAD
             marginBottom: '15px'
+=======
+            marginBottom: '15px',
+>>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
           }}
         >
           <label
@@ -139,7 +178,11 @@ const RegistrationForm = () => {
         <div
           style={{
             marginBottom: '16px',
+<<<<<<< HEAD
             position: 'relative' // Add relative positioning
+=======
+            position: 'relative', // Add relative positioning
+>>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
           }}
         >
           <label htmlFor="password">Password:</label>
@@ -155,7 +198,11 @@ const RegistrationForm = () => {
               border: '1px solid #ccc',
               borderRadius: '5px',
               marginBottom: '5px',
+<<<<<<< HEAD
               paddingRight: '40px' // Add padding to the right
+=======
+              paddingRight: '40px', // Add padding to the right
+>>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
             }}
             required
           />
@@ -175,7 +222,11 @@ const RegistrationForm = () => {
         <div
           style={{
             marginBottom: '16px',
+<<<<<<< HEAD
             position: 'relative' // Add relative positioning
+=======
+            position: 'relative', // Add relative positioning
+>>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
           }}
         >
           <label
@@ -198,7 +249,11 @@ const RegistrationForm = () => {
               padding: '10px',
               border: '1px solid #ccc',
               borderRadius: '5px',
+<<<<<<< HEAD
               paddingRight: '40px' // Add padding to the right
+=======
+              paddingRight: '40px', // Add padding to the right
+>>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
             }}
             required
           />
@@ -219,12 +274,29 @@ const RegistrationForm = () => {
           <div
             style={{
               color: 'red',
+<<<<<<< HEAD
               marginBottom: '20px'
+=======
+              marginBottom: '20px',
+>>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
             }}
           >
             {error}
           </div>
         )}
+<<<<<<< HEAD
+=======
+        {message && (
+          <div
+            style={{
+              color: 'green',
+              marginBottom: '20px',
+            }}
+          >
+            {message}
+          </div>
+        )}
+>>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
         <button
           type="submit"
           style={{
@@ -240,6 +312,12 @@ const RegistrationForm = () => {
           Register
         </button>
       </form>
+      {/* {showErrorPopup && (
+        <ErrorPopup
+          message={error}
+          onClose={() => setShowErrorPopup(false)}
+        />
+      )} */}
     </div>
   );
 };

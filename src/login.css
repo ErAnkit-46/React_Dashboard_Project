@@ -19,7 +19,7 @@ body {
   border: 1px solid #ccc;
   border-radius: 10px;
   backdrop-filter: blur(8px);
-  background-color: rgba(0, 0, 0, 0.5); /* Add a slight background color for better readability */
+ /* background-color: rgba(0, 0, 0, 0.5); /* Add a slight background color for better readability */
 }
 
 h2 {

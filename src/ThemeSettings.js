@@ -37,7 +37,7 @@ const ThemeSettings = () => {
 
   return (
     <Box>
-      <Typography variant="h6">Appearance Settings</Typography>
+      {/* <Typography variant="h6">Appearance Settings</Typography> */}
       <Box mt={2}>
         <Box>
           <Typography variant="subtitle1" sx={{ marginBottom: '2px' }}>
@@ -71,5 +71,5 @@ const ThemeSettings = () => {
   );
 };
 
-export { ThemeProvider, ThemeSettings };
+export { ThemeProvider,ThemeSettings };
 

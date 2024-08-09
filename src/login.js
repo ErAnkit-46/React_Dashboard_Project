@@ -12,8 +12,9 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [validationError, setValidationError] = useState('');
   const [errorField, setErrorField] = useState('');
-  const [userNotFound, setUserNotFound] = useState(false); // Initialize state
+  const [userNotFound, setUserNotFound] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,7 +33,7 @@ function Login() {
     setEmail(event.target.value);
     if (showTooltip && errorField === 'email') {
       const emailValidationMessage = validateEmail(event.target.value);
-      setErrorMessage(emailValidationMessage);
+      setValidationError(emailValidationMessage);
     }
   };
 
@@ -40,7 +41,7 @@ function Login() {
     setPassword(event.target.value);
     if (showTooltip && errorField === 'password') {
       const passwordValidationMessage = validatePassword(event.target.value);
-      setErrorMessage(passwordValidationMessage);
+      setValidationError(passwordValidationMessage);
       if (!passwordValidationMessage) {
         setShowTooltip(false);
       }
@@ -87,12 +88,12 @@ function Login() {
     const emailValidationMessage = validateEmail(email);
     const passwordValidationMessage = validatePassword(password);
     if (emailValidationMessage || passwordValidationMessage) {
-      setErrorMessage(emailValidationMessage || passwordValidationMessage);
+      setValidationError(emailValidationMessage || passwordValidationMessage);
       setErrorField(emailValidationMessage ? 'email' : 'password');
       setShowTooltip(true);
       return;
     }
-  
+
     // Check if user exists and login
     try {
       const response = await fetch('http://localhost:5000/api/login', {
@@ -102,22 +103,30 @@ function Login() {
         },
         body: JSON.stringify({ email, password }),
       });
-  
-      const data = await response.json();
+
+      const contentType = response.headers.get('Content-Type');
+      let data;
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        data = { message: await response.text() };
+      }
+
       if (response.status === 200) {
         setUserEmail(email); // Set the user email in the context
         navigate('/dash'); // Navigate to the dashboard
-      } else {
+      } else if (response.status === 401 || response.status === 404) {
         setUserNotFound(true);
-        setErrorMessage(data);
-        setShowTooltip(true);
-        setErrorField('email');
+        setErrorMessage(data.message || "Invalid credentials. Please try again.");
+      } else {
+        throw new Error(data.message || 'An unexpected error occurred.');
       }
     } catch (error) {
       console.error('Error logging in:', error);
+      setErrorMessage(error.message || 'An unexpected error occurred. Please try again later.');
     }
   };
-  
+
   const tooltipStyle = {
     position: 'absolute',
     marginTop: '-15px',
@@ -148,7 +157,7 @@ function Login() {
           />
           {showTooltip && errorField === 'email' && (
             <div style={{ ...tooltipStyle, left: '105%', top: '50%' }}>
-              {errorMessage}
+              {validationError}
             </div>
           )}
         </div>
@@ -170,7 +179,7 @@ function Login() {
             }}
           />
           <FontAwesomeIcon
-            icon={showPassword ? faEye : faEyeSlash }
+            icon={showPassword ? faEye : faEyeSlash}
             onClick={toggleShowPassword}
             style={{
               position: 'absolute',
@@ -183,7 +192,7 @@ function Login() {
           />
           {showTooltip && errorField === 'password' && (
             <div style={{ ...tooltipStyle, left: '105%', top: '50%' }}>
-              {errorMessage}
+              {validationError}
             </div>
           )}
         </div>
@@ -199,6 +208,11 @@ function Login() {
         </div>
 
         <button type="submit">Log In</button>
+        {errorMessage && (
+          <div style={{ color: 'red', marginTop: '10px' }}>
+            {errorMessage}
+          </div>
+        )}
         <p className="color">Don't have an account? <a className="green" href="/register">Register</a></p>
       </form>
     </div>
@@ -206,4 +220,3 @@ function Login() {
 }
 
 export default Login;
-

@@ -13,9 +13,14 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Connect to MongoDB
+<<<<<<< HEAD
 const db = process.env.MONGO_URI || 'mongodb+srv://ErAnkit-46:QhUH1DYI93KawfH4@cluster46.obcgbfg.mongodb.net';
 
 mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true, tls: true, tlsAllowInvalidCertificates: true })
+=======
+const db = process.env.MONGO_URI || 'mongodb+srv://akabhishek7294:fUkE9Dy0HjH7zxzW@login.ax6uvlr.mongodb.net/';
+mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
+>>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
 
@@ -113,5 +118,5 @@ app.get('/api/messages/:recipientEmail', async (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  console.log('Server running on port ${port}');
 });
