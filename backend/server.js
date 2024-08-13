@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const bcrypt = require('bcryptjs');
 
 dotenv.config();
 
@@ -13,21 +14,15 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Connect to MongoDB
-<<<<<<< HEAD
-const db = process.env.MONGO_URI || 'mongodb+srv://ErAnkit-46:QhUH1DYI93KawfH4@cluster46.obcgbfg.mongodb.net';
-
-mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true, tls: true, tlsAllowInvalidCertificates: true })
-=======
 const db = process.env.MONGO_URI || 'mongodb+srv://akabhishek7294:fUkE9Dy0HjH7zxzW@login.ax6uvlr.mongodb.net/';
-mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
->>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
+mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true, tls: true, tlsAllowInvalidCertificates: true })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
 
 // Define User Schema
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
-  email: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   confirmPassword: { type: String, required: true },
 });
@@ -49,19 +44,18 @@ const Message = mongoose.model('Message', messageSchema);
 app.post('/api/register', async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
 
-  // Check if passwords match
   if (password !== confirmPassword) {
     return res.status(400).send('Passwords do not match');
   }
 
   try {
-    // Check if email or username already exists
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
       return res.status(400).send('Email or username already exists');
     }
 
-    const newUser = new User({ username, email, password, confirmPassword });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ username, email, password: hashedPassword, confirmPassword });
     await newUser.save();
     res.status(201).send('User registered successfully');
   } catch (err) {
@@ -75,23 +69,45 @@ app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Find user by email
     const user = await User.findOne({ email });
-
-    // Check if user exists
     if (!user) {
       return res.status(404).send('User not found. Please register.');
     }
 
-    // Check if the password is correct (assuming passwords are stored in plain text, which is not recommended for production)
-    if (user.password !== password) {
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       return res.status(400).send('Invalid password');
     }
 
-    // Successful login
     res.status(200).send({ message: 'Login successful', user });
   } catch (err) {
     res.status(500).send('Error logging in');
+  }
+});
+
+// API endpoint to reset password directly without current password validation
+app.put('/api/reset-password', async (req, res) => {
+  const { email, newPassword, confirmPassword } = req.body;
+
+  if (newPassword !== confirmPassword) {
+    return res.status(400).send('New passwords do not match');
+  }
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedNewPassword;
+    user.confirmPassword = hashedNewPassword; // Updating confirmPassword as well
+    await user.save();
+
+    res.status(200).send('Password has been updated');
+  } catch (err) {
+    console.error('Error updating password:', err);
+    res.status(500).send('Error updating password');
   }
 });
 
@@ -118,5 +134,5 @@ app.get('/api/messages/:recipientEmail', async (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log('Server running on port ${port}');
+  console.log(`Server running on port ${port}`);
 });

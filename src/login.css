@@ -16,7 +16,7 @@ body {
   width: 350px;
   margin: 10% auto;
   padding: 30px;
-  border: 1px solid #ccc;
+  border: 1px solid #020000;
   border-radius: 10px;
   backdrop-filter: blur(8px);
  /* background-color: rgba(0, 0, 0, 0.5); /* Add a slight background color for better readability */
@@ -24,6 +24,12 @@ body {
 
 h2 {
   text-align: center;
+  color: #090101;
+  font-style:italic;
+}
+
+label{
+  color: #090101;
 }
 
 .form-group {
@@ -42,13 +48,14 @@ h2 {
 }
 
 .green {
-  color: #4CAF50;
+  color: #000dff;
+  text-decoration: underline;
 }
 
 input[type="email"] {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #090101;
   border-radius: 5px;
   box-sizing: border-box;
 }
@@ -68,10 +75,13 @@ button[type="submit"] {
 }
 
 a {
-  color: #4CAF50;
+  color: #33db16;
   text-decoration: none;
 }
 
 a:hover {
   text-decoration: underline;
+}
+.color{
+  color: #090101;
 }

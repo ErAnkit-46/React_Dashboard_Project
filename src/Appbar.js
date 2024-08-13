@@ -327,7 +327,7 @@ export default function MiniDrawer() {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', backgroundColor: '#fafafa',backgroundSize: 'cover',backgroundPosition: 'center',minHeight: '100vh', }}>
       <CssBaseline />
       <AppBar position="fixed" open={open} sx={{ backgroundColor: "#724385", height: '45px',padding: 0, overflow: 'hidden', boxSizing: 'border-box'  }}>
         <Toolbar>
@@ -335,7 +335,7 @@ export default function MiniDrawer() {
             color="inherit"
             aria-label={open ? "close drawer" : "open drawer"}
             onClick={open ? handleDrawerClose : handleDrawerOpen}
-            sx={{ mb: '25px' }}
+            sx={{ mb: '25px', ml:'-15px' }}
           >
             {open ? <ChevronLeftIcon /> : <MenuIcon />}
           </IconButton>
@@ -385,7 +385,7 @@ export default function MiniDrawer() {
           handleSliderChange={handleSliderChange}
         />
       )}
-      <Drawer variant="permanent" open={open}>
+      <Drawer variant="permanent" open={open} sx={{maxHeight:'100px'}}>
         <DrawerHeader />
         <List sx={{ mt: -3, mb: -2,}}>
           {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
@@ -399,7 +399,9 @@ export default function MiniDrawer() {
             </ListItem>
           ))}
         </List>
-        <Divider sx={{ mt: 37, width: '100%', maxWidth: '100%', flexShrink: 0, transform: 'translateZ(0)', }} />
+
+        <Divider sx={{ mb: 55, width: '100%', maxWidth: '100%', flexShrink: 0, transform: 'translateZ(0)'}} />
+
         <List sx={{ mt: -1, mb: -2, width: '100%', maxWidth: '100%', boxSizing: 'border-box', }}>
           {['Settings'].map((text) => (
             <ListItem key={text} disablePadding button onClick={handleDialogOpen} sx={{ display: 'block', width: '100%',boxSizing: 'border-box'}}>
@@ -417,8 +419,8 @@ export default function MiniDrawer() {
                     justifyContent: 'center',
                     fontSize: 23,
                     ml: 0.7,
-		    position: 'relative',
-		    transform: 'translateZ(0)',
+		                position: 'relative',
+		                transform: 'translateZ(0)',
                   }}
                 />
                 <ListItemText primary="Settings" sx={{ opacity: open ? 1 : 0 }} />
@@ -426,14 +428,16 @@ export default function MiniDrawer() {
             </ListItem>
           ))}
         </List>
-	
       </Drawer>
+
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        <Box>
-	  <Dialog open={dialogOpen} onClose={handleDialogClose}>
+        <Box style={{ display:'flex', flexWrap: 'wrap' }}>
+	        <Dialog open={dialogOpen} onClose={handleDialogClose}>
              <SettingsPopup open={dialogOpen} onClose={handleDialogClose} />
           </Dialog>
+          <GraphWidget timeRange={timeRange} />
+          <GraphWidget timeRange={timeRange} />
           <GraphWidget timeRange={timeRange} />
         </Box>
       </Box>

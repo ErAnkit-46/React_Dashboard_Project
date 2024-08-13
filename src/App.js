@@ -9,10 +9,10 @@ import SettingsPopup from './SettingsPopup';
 import { UserProvider } from './MyProfileContent';
 import { MyProfileContent } from './MyProfileContent';
 import { LanguageProvider } from './LanguageContext';
-<<<<<<< HEAD
-=======
-// import { ThemeProvider, ThemeSettings } from './ThemeSettings';
->>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
+// <<<<<<< HEAD
+// =======
+// // import { ThemeProvider, ThemeSettings } from './ThemeSettings';
+// >>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
 import { ThemeProvider } from './ThemeSettings';
 
 
@@ -30,10 +30,7 @@ function App() {
               <Route path="/" element={<SettingsPopup open={true} onClose={() => {}} />} />
               <Route path="/profile" element={<MyProfileContent />} />
             </Routes>
-<<<<<<< HEAD
-=======
-            {/* <ThemeSettings /> */}
->>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
+
           </BrowserRouter>
         </UserProvider>
       </LanguageProvider>

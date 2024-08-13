@@ -17,8 +17,9 @@ const GraphWidget = ({ timeRange }) => {
         label: 'My First dataset',
         data: [],
         fill: false,
-        backgroundColor: 'rgba(75,192,192,0.2)',
-        borderColor: 'rgba(75,192,192,1)',
+        // backgroundColor: 'rgba(75,192,192,0.2)',
+        // borderColor: 'rgba(75,192,192,1)',
+        padding:20,
       },
     ],
   });
@@ -63,8 +64,8 @@ const GraphWidget = ({ timeRange }) => {
           label: 'My First dataset',
           data: dataRef.current.dataPoints,
           fill: false,
-          backgroundColor: 'rgba(75,192,192,0.2)',
-          borderColor: 'rgba(75,192,192,1)',
+          // backgroundColor: 'rgba(75,192,192,0.2)',
+          // borderColor: 'rgba(75,192,192,1)',
         },
       ],
     };
@@ -93,8 +94,8 @@ const GraphWidget = ({ timeRange }) => {
             label: 'My First dataset',
             data: dataRef.current.dataPoints,
             fill: false,
-            backgroundColor: 'rgba(75,192,192,0.2)',
-            borderColor: 'rgba(75,192,192,1)',
+            // backgroundColor: 'rgba(75,192,192,0.2)',
+            // borderColor: 'rgba(75,192,192,1)',
           },
         ],
       };
@@ -217,7 +218,7 @@ const GraphWidget = ({ timeRange }) => {
   };
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', padding:20 }}>
       <div style={boxStyle}>
         <h2 style={titleStyle}>Data Graph Chart</h2>
         <MoreVertMenu

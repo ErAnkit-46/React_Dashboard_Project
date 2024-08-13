@@ -132,12 +132,12 @@ function Login() {
     marginTop: '-15px',
     padding: '10px',
     width: '220px',
-    backgroundColor: '#EFDBA1',
+    backgroundColor: '#fafafa',
     border: '1px solid #ccc',
     borderRadius: '5px',
     boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
-    fontSize: '12px',
-    color: '#333',
+    fontSize: '13px',
+    color: '#000000',
     zIndex: 1,
   };
 
@@ -146,7 +146,7 @@ function Login() {
       <form onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()}>
         <div className="form-group" style={{ position: 'relative' }}>
           <h2>Login</h2>
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="email">Email:-</label>
           <input
             type="email"
             id="email"
@@ -163,8 +163,8 @@ function Login() {
         </div>
 
         <div className="form-group" style={{ position: 'relative' }}>
-          <label htmlFor="password">Password:</label>
-          <input
+          <label htmlFor="password">Password:-</label>
+           <input
             type={showPassword ? 'text' : 'password'}
             id="password"
             placeholder="Enter password"
@@ -172,12 +172,17 @@ function Login() {
             onChange={handlePasswordChange}
             required
             style={{
-              padding: '10px',
-              width: '330px',
+              // padding: '10px',
+              // width: '330px',
               border: '1px solid #ccc',
               borderRadius: '5px',
+              border: '1px solid #090101',
+              boxSizing: 'border-box', 
+              padding: '10px 40px 10px 10px',
+              width: '100%',
+
             }}
-          />
+           />
           <FontAwesomeIcon
             icon={showPassword ? faEye : faEyeSlash}
             onClick={toggleShowPassword}
