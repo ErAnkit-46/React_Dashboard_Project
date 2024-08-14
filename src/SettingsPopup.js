@@ -16,19 +16,11 @@ import KeyRoundedIcon from '@mui/icons-material/KeyRounded';
 import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
 import BorderColorRoundedIcon from '@mui/icons-material/BorderColorRounded';
 import PriorityHighRoundedIcon from '@mui/icons-material/PriorityHighRounded';
-import CameraAltRoundedIcon from '@mui/icons-material/CameraAltRounded';
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Slide from '@mui/material/Slide';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Radio from '@mui/material/Radio';
 import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import SwitchAccountContent from './SwitchAccountContent';
@@ -90,6 +82,7 @@ const SettingsPopup = ({ open, onClose }) => {
   };
 
 const handleLogout = () => {
+  localStorage.removeItem('token'); // Clear the token
   navigate('/'); // Redirect to login page
 
 };

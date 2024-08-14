@@ -16,7 +16,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
-import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
 import IconButton from '@mui/material/IconButton';
 import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
 import InputBase from '@mui/material/InputBase';
@@ -98,12 +97,11 @@ const SearchBar = ({ expanded, onToggleSearch }) => {
   const [search, setSearch] = React.useState('');
   const [searchData, setSearchData] = React.useState([]);
   const [selectedItem, setSelectedItem] = React.useState(-1);
-
   const handleChange = (e) => {
     setSearch(e.target.value);
   };
 
-  const handleKeyDown = (e) => {
+const handleKeyDown = (e) => {
     if (searchData.length > 0) {
       if (e.key === 'ArrowUp' && selectedItem > 0) {
         setSelectedItem((prev) => prev - 1);
@@ -118,7 +116,7 @@ const SearchBar = ({ expanded, onToggleSearch }) => {
     }
   };
 
-  React.useEffect(() => {
+React.useEffect(() => {
     if (search !== '') {
       fetch(`https://api.tvmaze.com/search/shows?q=${search}`)
         .then((res) => res.json())
@@ -134,9 +132,9 @@ const SearchBar = ({ expanded, onToggleSearch }) => {
     }
   }, [search]);
 
-  if (!expanded) {
+    if (!expanded) {
     return null;
-  }
+    }
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
@@ -205,8 +203,6 @@ const SearchBar = ({ expanded, onToggleSearch }) => {
 
 const TimeRangeFilterBar = ({ timeRange, handleSliderChange, handleClose }) => {
   const theme = useTheme();
-
-
   const generateMarks = () => {
     const marks = [];
     for (let i = 0; i <= 1440; i += 60) {
@@ -329,6 +325,7 @@ export default function MiniDrawer() {
   return (
     <Box sx={{ display: 'flex', backgroundColor: '#fafafa',backgroundSize: 'cover',backgroundPosition: 'center',minHeight: '100vh', }}>
       <CssBaseline />
+
       <AppBar position="fixed" open={open} sx={{ backgroundColor: "#724385", height: '45px',padding: 0, overflow: 'hidden', boxSizing: 'border-box'  }}>
         <Toolbar>
           <IconButton
@@ -379,12 +376,14 @@ export default function MiniDrawer() {
 
         </Toolbar>
       </AppBar>
+
       {showTimeFilter && (
         <TimeRangeFilterBar
           timeRange={timeRange}
           handleSliderChange={handleSliderChange}
         />
       )}
+
       <Drawer variant="permanent" open={open} sx={{maxHeight:'100px'}}>
         <DrawerHeader />
         <List sx={{ mt: -3, mb: -2,}}>

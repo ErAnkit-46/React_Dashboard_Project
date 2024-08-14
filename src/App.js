@@ -9,10 +9,7 @@ import SettingsPopup from './SettingsPopup';
 import { UserProvider } from './MyProfileContent';
 import { MyProfileContent } from './MyProfileContent';
 import { LanguageProvider } from './LanguageContext';
-// <<<<<<< HEAD
-// =======
-// // import { ThemeProvider, ThemeSettings } from './ThemeSettings';
-// >>>>>>> d5c6dcc0529d2f3d3c03e251f9c212daa5b11c41
+import ProtectedRoute from './ProtectedRoute';
 import { ThemeProvider } from './ThemeSettings';
 
 
@@ -21,16 +18,22 @@ function App() {
     <ThemeProvider>
       <LanguageProvider>
         <UserProvider>
-          <BrowserRouter>
+          <BrowserRouter>          
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/register" element={<Registration />} />
-              <Route path="/dash" element={<Appbar />} />
+              <Route 
+                path="/dash" 
+                element={
+                  <ProtectedRoute>
+                    <Appbar />
+                  </ProtectedRoute>
+                } 
+              />
               <Route path="/forget" element={<Forget />} />
               <Route path="/" element={<SettingsPopup open={true} onClose={() => {}} />} />
               <Route path="/profile" element={<MyProfileContent />} />
             </Routes>
-
           </BrowserRouter>
         </UserProvider>
       </LanguageProvider>

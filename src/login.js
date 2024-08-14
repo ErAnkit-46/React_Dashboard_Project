@@ -100,10 +100,14 @@ function Login() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-        },
+        },  
         body: JSON.stringify({ email, password }),
       });
 
+      // localStorage.setItem('token', response.data.token);
+      // // Redirect to a protected page
+      // navigate('/dash');
+      
       const contentType = response.headers.get('Content-Type');
       let data;
       if (contentType && contentType.includes('application/json')) {
@@ -112,9 +116,11 @@ function Login() {
         data = { message: await response.text() };
       }
 
-      if (response.status === 200) {
+      if (response.status === 200 && data.token) {
+        localStorage.setItem('token', data.token); // Store the token in localStorage
         setUserEmail(email); // Set the user email in the context
         navigate('/dash'); // Navigate to the dashboard
+      
       } else if (response.status === 401 || response.status === 404) {
         setUserNotFound(true);
         setErrorMessage(data.message || "Invalid credentials. Please try again.");

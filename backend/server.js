@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 dotenv.config();
 
@@ -79,7 +80,14 @@ app.post('/api/login', async (req, res) => {
       return res.status(400).send('Invalid password');
     }
 
-    res.status(200).send({ message: 'Login successful', user });
+    const token = jwt.sign({ userId: user._id }, 'your_jwt_secret_key');
+     // Send the token along with the success message
+     res.status(200).json({
+      message: 'Login successful',
+      token: token, // Include the token in the response
+      user: user // Optionally include the user data if needed
+    });
+    
   } catch (err) {
     res.status(500).send('Error logging in');
   }
@@ -130,6 +138,25 @@ app.get('/api/messages/:recipientEmail', async (req, res) => {
   } catch (error) {
     res.status(400).json({ error: 'Error fetching messages' });
   }
+});
+
+
+// Middleware to Protect Routes
+const authenticateToken = (req, res, next) => {
+  const token = req.header('Authorization').replace('Bearer ', '');
+  if (!token) return res.status(401).send('Access Denied');
+  try {
+      const verified = jwt.verify(token, 'your_jwt_secret_key');
+      req.user = verified;
+      next();
+  } catch (error) {
+      res.status(400).send('Invalid Token');
+  }
+};
+
+// Protected Route
+app.get('/api/dash', authenticateToken, (req, res) => {
+  res.send('This is a protected route');
 });
 
 // Start the server
