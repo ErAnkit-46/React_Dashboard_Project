@@ -15,6 +15,7 @@ function Login() {
   const [validationError, setValidationError] = useState('');
   const [errorField, setErrorField] = useState('');
   const [userNotFound, setUserNotFound] = useState(false);
+  const [showLogoutPrompt, setShowLogoutPrompt] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -94,7 +95,6 @@ function Login() {
       return;
     }
 
-    // Check if user exists and login
     try {
       const response = await fetch('http://localhost:5000/api/login', {
         method: 'POST',
@@ -104,6 +104,8 @@ function Login() {
         body: JSON.stringify({ email, password }),
       });
 
+      console.log('Response status:', response.status); // Debugging log
+
       const contentType = response.headers.get('Content-Type');
       let data;
       if (contentType && contentType.includes('application/json')) {
@@ -112,14 +114,50 @@ function Login() {
         data = { message: await response.text() };
       }
 
+      console.log('Response data:', data); // Debugging log
+
       if (response.status === 200) {
         setUserEmail(email); // Set the user email in the context
+        sessionStorage.setItem('token', data.token); // Use sessionStorage instead of localStorage
+        setShowLogoutPrompt(false);
         navigate('/dash'); // Navigate to the dashboard
-      } else if (response.status === 401 || response.status === 404) {
+      } else if (response.status === 401) {
+        setShowLogoutPrompt(true); // Show prompt for active session
+      } else if (response.status === 404) {
         setUserNotFound(true);
         setErrorMessage(data.message || "Invalid credentials. Please try again.");
       } else {
         throw new Error(data.message || 'An unexpected error occurred.');
+      }
+    } catch (error) {
+      console.error('Error logging in:', error);
+      setErrorMessage(error.message || 'An unexpected error occurred. Please try again later.');
+    }
+  };
+
+  const handleLogoutOtherSession = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/logoutOtherSession', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      console.log('Logout response status:', response.status); // Debugging log
+
+      const data = await response.json();
+
+      console.log('Logout response data:', data); // Debugging log
+
+      if (response.status === 200) {
+        setUserEmail(email); // Set the user email in the context
+        sessionStorage.setItem('token', data.token); // Use sessionStorage instead of localStorage
+        setShowLogoutPrompt(false);
+        navigate('/dash'); // Navigate to the dashboard
+      } else {
+        throw new Error(data.message || 'Failed to log out other session.');
       }
     } catch (error) {
       console.error('Error logging in:', error);
@@ -146,7 +184,7 @@ function Login() {
       <form onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()}>
         <div className="form-group" style={{ position: 'relative' }}>
           <h2>Login</h2>
-          <label htmlFor="email">Email:-</label>
+          <label htmlFor="email">Email:</label>
           <input
             type="email"
             id="email"
@@ -163,8 +201,8 @@ function Login() {
         </div>
 
         <div className="form-group" style={{ position: 'relative' }}>
-          <label htmlFor="password">Password:-</label>
-           <input
+          <label htmlFor="password">Password:</label>
+          <input
             type={showPassword ? 'text' : 'password'}
             id="password"
             placeholder="Enter password"
@@ -172,17 +210,13 @@ function Login() {
             onChange={handlePasswordChange}
             required
             style={{
-              // padding: '10px',
-              // width: '330px',
-              border: '1px solid #ccc',
-              borderRadius: '5px',
               border: '1px solid #090101',
-              boxSizing: 'border-box', 
+              boxSizing: 'border-box',
+              borderRadius: '5px', 
               padding: '10px 40px 10px 10px',
               width: '100%',
-
             }}
-           />
+          />
           <FontAwesomeIcon
             icon={showPassword ? faEye : faEyeSlash}
             onClick={toggleShowPassword}
@@ -220,6 +254,12 @@ function Login() {
         )}
         <p className="color">Don't have an account? <a className="green" href="/register">Register</a></p>
       </form>
+      {showLogoutPrompt && (
+        <div className="logout-prompt">
+          <p>Another session is active. Do you want to log out the other session?</p>
+          <button onClick={handleLogoutOtherSession}>Yes, log out other session</button>
+        </div>
+      )}
     </div>
   );
 }

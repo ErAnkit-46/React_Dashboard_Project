@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const RegistrationForm = () => {
   const [email, setEmail] = useState('');
@@ -12,42 +12,26 @@ const RegistrationForm = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
-  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
 
-  const validatePassword = (password) => {
-    if (password.length < 8) {
-      return 'Password must be at least 8 characters long.';
-    }
-    if (!/[A-Z]/.test(password)) {
-      return 'Password must contain at least one uppercase letter.';
-    }
-    if (!/[!@#$%^&*]/.test(password)) {
-      return 'Password must contain at least one special character.';
-    }
-    if (/\s/.test(password)) {
-      return 'Password must not contain spaces.';
-    }
-    return ''; // No error
-  };
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const passwordError = validatePassword(password);
-    if (passwordError) {
-      setError(passwordError);
-      return;
-    }
-
     if (password !== confirmPassword) {
       setError('Passwords do not match');
+      setShowErrorPopup(true);
+      setTimeout(() => setShowErrorPopup(false), 5000); // Hide after 5 seconds
       return;
     }
 
+    // Perform registration logic here (e.g., send data to a backend server)
     const userData = {
       username,
       email,
       password,
+      confirmPassword,
     };
 
     try {
@@ -62,16 +46,18 @@ const RegistrationForm = () => {
       if (response.ok) {
         setMessage('User registered successfully');
         setError('');
-        setRegistrationSuccess(true);
+        setTimeout(() => {
+          navigate('/'); // Redirect to the login page
+        }, 2000); // Redirect after 5 seconds
       } else {
         setMessage('Error registering user');
         setError('');
       }
     } catch (error) {
       setMessage('Error: ' + error.message);
+      alert(error.message);
       setError('');
     }
-
     console.log('Email:', email);
     console.log('Password:', password);
     console.log('Confirm Password:', confirmPassword);
@@ -97,21 +83,21 @@ const RegistrationForm = () => {
         boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
         marginTop: '130px',
         backdropFilter: 'blur(5px)',
-        height: '500px',
+        height: '500px'
       }}
     >
       <form onSubmit={handleSubmit}>
         <h2
           style={{
             fontWeight: 'bold',
-            marginBottom: '15px',
+            marginBottom: '15px'
           }}
         >
           New Registration
         </h2>
         <div
           style={{
-            marginBottom: '15px',
+            marginBottom: '15px'
           }}
         >
           <label
@@ -140,7 +126,7 @@ const RegistrationForm = () => {
         </div>
         <div
           style={{
-            marginBottom: '15px',
+            marginBottom: '15px'
           }}
         >
           <label
@@ -169,7 +155,7 @@ const RegistrationForm = () => {
         <div
           style={{
             marginBottom: '16px',
-            position: 'relative',
+            position: 'relative'
           }}
         >
           <label htmlFor="password">Password:</label>
@@ -180,13 +166,12 @@ const RegistrationForm = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             style={{
+              width: '87%',
+              padding: '10px',
               border: '1px solid #000000',
               borderRadius: '5px',
               marginBottom: '5px',
-              boxSizing: 'border-box',
-              padding: '10px 40px 10px 10px',
-              width: '100%',
-              paddingRight: '40px',
+              paddingRight: '40px'
             }}
             required
           />
@@ -206,7 +191,7 @@ const RegistrationForm = () => {
         <div
           style={{
             marginBottom: '16px',
-            position: 'relative',
+            position: 'relative'
           }}
         >
           <label
@@ -225,12 +210,11 @@ const RegistrationForm = () => {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             style={{
+              width: '87%',
+              padding: '10px',
               border: '1px solid #000000',
               borderRadius: '5px',
-              boxSizing: 'border-box',
-              padding: '10px 40px 10px 10px',
-              width: '100%',
-              paddingRight: '40px',
+              paddingRight: '40px'
             }}
             required
           />
@@ -251,7 +235,7 @@ const RegistrationForm = () => {
           <div
             style={{
               color: 'red',
-              marginBottom: '20px',
+              marginBottom: '20px'
             }}
           >
             {error}
@@ -267,40 +251,27 @@ const RegistrationForm = () => {
             {message}
           </div>
         )}
-        {registrationSuccess ? (
-          <Link
-            to="/"
-            style={{
-              display: 'inline-block',
-              backgroundColor: '#4CAF50',
-              color: '#fff',
-              padding: '10px 20px',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              textDecoration: 'none',
-              marginTop: '25px',
-            }}
-          >
-            Back to Login
-          </Link>
-        ) : (
-          <button
-            type="submit"
-            style={{
-              backgroundColor: '#4CAF50',
-              color: '#fff',
-              padding: '10px 20px',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              marginTop: '25px',
-            }}
-          >
-            Register
-          </button>
-        )}
+        <button
+          type="submit"
+          style={{
+            backgroundColor: '#4CAF50',
+            color: '#fff',
+            padding: '10px 20px',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            marginTop: '25px',
+          }}
+        >
+          Register
+        </button>
       </form>
+      {/* {showErrorPopup && (
+        <ErrorPopup
+          message={error}
+          onClose={() => setShowErrorPopup(false)}
+        />
+      )} */}
     </div>
   );
 };

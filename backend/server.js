@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt'); // Import bcrypt
 
 dotenv.config();
 
@@ -22,9 +22,9 @@ mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true, tls: tru
 // Define User Schema
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
+  email: { type: String, required: true },
   password: { type: String, required: true },
-  confirmPassword: { type: String, required: true },
+  // Removed confirmPassword from the schema
 });
 
 const User = mongoose.model('User', userSchema);
@@ -44,18 +44,23 @@ const Message = mongoose.model('Message', messageSchema);
 app.post('/api/register', async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
 
+  // Check if passwords match
   if (password !== confirmPassword) {
     return res.status(400).send('Passwords do not match');
   }
 
   try {
+    // Check if email or username already exists
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
       return res.status(400).send('Email or username already exists');
     }
 
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, email, password: hashedPassword, confirmPassword });
+
+    // Create a new user with hashed password
+    const newUser = new User({ username, email, password: hashedPassword });
     await newUser.save();
     res.status(201).send('User registered successfully');
   } catch (err) {
@@ -69,18 +74,24 @@ app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    // Find user by email
     const user = await User.findOne({ email });
+
+    // Check if user exists
     if (!user) {
       return res.status(404).send('User not found. Please register.');
     }
 
+    // Check if the password is correct
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).send('Invalid password');
     }
 
-    res.status(200).send({ message: 'Login successful', user });
+    // Successful login
+    res.status(200).send({ message: 'Login successful', user: { username: user.username, email: user.email } });
   } catch (err) {
+    console.error('Error logging in:', err);
     res.status(500).send('Error logging in');
   }
 });
@@ -99,36 +110,17 @@ app.put('/api/reset-password', async (req, res) => {
       return res.status(404).send('User not found');
     }
 
-    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedNewPassword;
-    user.confirmPassword = hashedNewPassword; // Updating confirmPassword as well
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update user with the hashed password
+    user.password = hashedPassword;
     await user.save();
 
     res.status(200).send('Password has been updated');
   } catch (err) {
     console.error('Error updating password:', err);
     res.status(500).send('Error updating password');
-  }
-});
-
-// API endpoint to send a message
-app.post('/api/messages', async (req, res) => {
-  try {
-    const newMessage = new Message(req.body);
-    await newMessage.save();
-    res.status(201).json(newMessage);
-  } catch (error) {
-    res.status(400).json({ error: 'Error saving message' });
-  }
-});
-
-// API endpoint to get messages for a recipient
-app.get('/api/messages/:recipientEmail', async (req, res) => {
-  try {
-    const messages = await Message.find({ recipient: req.params.recipientEmail }).sort({ timestamp: 1 });
-    res.json(messages);
-  } catch (error) {
-    res.status(400).json({ error: 'Error fetching messages' });
   }
 });
 
