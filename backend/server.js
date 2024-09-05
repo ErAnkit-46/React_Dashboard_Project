@@ -15,7 +15,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Connect to MongoDB
-const db = process.env.MONGO_URI || 'mongodb+srv://akabhishek7294:fUkE9Dy0HjH7zxzW@login.ax6uvlr.mongodb.net/';
+//const db = process.env.MONGO_URI || 'mongodb+srv://akabhishek7294:fUkE9Dy0HjH7zxzW@login.ax6uvlr.mongodb.net/';
+const db = process.env.MONGO_URI || 'mongodb+srv://ErAnkit-46:QhUH1DYI93KawfH4@cluster46.obcgbfg.mongodb.net/';
 mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true, tls: true, tlsAllowInvalidCertificates: true })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));

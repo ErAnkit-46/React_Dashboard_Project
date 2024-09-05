@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { UserContext } from './MyProfileContent';
 import './login.css';
+import Tooltip from './Tooltip';
 
 function Login() {
   const { setEmail: setUserEmail } = useContext(UserContext);
@@ -216,15 +217,19 @@ function Login() {
           <div>
             <a href="/forget" className="green">Forgot password?</a>
           </div>
-        </div>
-
-        <button type="submit">Log In</button>
-        {errorMessage && (
+          </div>
+          <button type="submit">Log In</button>
+         {errorMessage && (
           <div style={{ color: 'red', marginTop: '10px' }}>
             {errorMessage}
           </div>
         )}
-        <p className="color">Don't have an account? <a className="green" href="/register">Register</a></p>
+        <p className="color">
+          Don't have an account?
+          {/* <Tooltip text= "Register" > */}
+            <a className="green" href="/register">Register</a>
+          {/* </Tooltip> */}
+        </p>
       </form>
     </div>
   );

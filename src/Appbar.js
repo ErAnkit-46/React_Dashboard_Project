@@ -19,13 +19,16 @@ import MailIcon from '@mui/icons-material/Mail';
 import IconButton from '@mui/material/IconButton';
 import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
 import InputBase from '@mui/material/InputBase';
-import GraphWidget from './GraphWidget.js';
+import GraphWidget from './GraphWidget';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import Slider from '@mui/material/Slider';
 import FilterAltTwoToneIcon from '@mui/icons-material/FilterAltTwoTone';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Dialog from '@mui/material/Dialog';
 import SettingsPopup from './SettingsPopup';
+import TimeRangeFilterDialog from './TimeRangeFilterDialog';
+import Button from '@mui/material/Button';
+
 
 const drawerWidth = 170;
 
@@ -97,11 +100,12 @@ const SearchBar = ({ expanded, onToggleSearch }) => {
   const [search, setSearch] = React.useState('');
   const [searchData, setSearchData] = React.useState([]);
   const [selectedItem, setSelectedItem] = React.useState(-1);
+
   const handleChange = (e) => {
     setSearch(e.target.value);
   };
 
-const handleKeyDown = (e) => {
+  const handleKeyDown = (e) => {
     if (searchData.length > 0) {
       if (e.key === 'ArrowUp' && selectedItem > 0) {
         setSelectedItem((prev) => prev - 1);
@@ -116,7 +120,7 @@ const handleKeyDown = (e) => {
     }
   };
 
-React.useEffect(() => {
+  React.useEffect(() => {
     if (search !== '') {
       fetch(`https://api.tvmaze.com/search/shows?q=${search}`)
         .then((res) => res.json())
@@ -132,9 +136,9 @@ React.useEffect(() => {
     }
   }, [search]);
 
-    if (!expanded) {
+  if (!expanded) {
     return null;
-    }
+  }
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
@@ -201,68 +205,64 @@ React.useEffect(() => {
   );
 };
 
-const TimeRangeFilterBar = ({ timeRange, handleSliderChange, handleClose }) => {
-  const theme = useTheme();
-  const generateMarks = () => {
-    const marks = [];
-    for (let i = 0; i <= 1440; i += 60) {
-      marks.push({ value: i });
-    }
-    return marks;
-  };
+// const TimeRangeFilterBar = ({ timeRange, handleSliderChange }) => {
+//   const theme = useTheme();
 
-  return (
-    <AppBar position="fixed" sx={{ backgroundColor: "#724385", height: '40px', top: '45px', zIndex: theme => theme.zIndex.drawer + 2 }}>
-      <Toolbar sx={{ minHeight: '40px', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', mb: '20px' }}>
-          <Slider
-            className="custom-slider"
-            value={timeRange}
-            onChange={handleSliderChange}
-            valueLabelDisplay="off"
-            step={1}
-            min={0}
-            max={1440}
-            marks={generateMarks()}
-            aria-labelledby="time-slider"
-            sx={{
-              width: '100%',
-              '& .MuiSlider-rail': {
-                backgroundColor: '#FF5733',
-                height: '4px',
-                opacity: 0.8,
-              },
-              '& .MuiSlider-track': {
-                backgroundColor: '#00BFFF',
-                height: '4px',
-              },
-              '& .MuiSlider-thumb': {
-                backgroundColor: '#FF0000',
-                height: '12px',
-                width: '12px',
-              },
-              '& .MuiSlider-valueLabel': {
-                backgroundColor: 'transparent',
-                color: '#000000',
-                fontWeight: 'bold',
-              },
-            }}
-          />
-        </Box>
-      </Toolbar>
-    </AppBar>
-  );
-};
+//   const generateMarks = () => {
+//     const marks = [];
+//     for (let i = 0; i <= 1440; i += 60) {
+//       marks.push({ value: i });
+//     }
+//     return marks;
+//   };
+
+//   return (
+//     <Box sx={{ width: '100%', p: 2 }}>
+//       <Slider
+//         className="custom-slider"
+//         value={timeRange}
+//         onChange={handleSliderChange}
+//         valueLabelDisplay="off"
+//         step={1}
+//         min={0}
+//         max={1440}
+//         marks={generateMarks()}
+//         aria-labelledby="time-slider"
+//         sx={{
+//           width: '100%',
+//           '& .MuiSlider-rail': {
+//             backgroundColor: '#FF5733',
+//             height: '4px',
+//             opacity: 0.8,
+//           },
+//           '& .MuiSlider-track': {
+//             backgroundColor: '#00BFFF',
+//             height: '4px',
+//           },
+//           '& .MuiSlider-thumb': {
+//             backgroundColor: '#FF0000',
+//             height: '12px',
+//             width: '12px',
+//           },
+//           '& .MuiSlider-valueLabel': {
+//             backgroundColor: 'transparent',
+//             color: '#000000',
+//             fontWeight: 'bold',
+//           },
+//         }}
+//       />
+//     </Box>
+//   );
+// };
 
 export default function MiniDrawer() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [timeRange, setTimeRange] = React.useState([0, 1440]);
-  const [showTimeFilter, setShowTimeFilter] = useState(false);
   const [searchExpanded, setSearchExpanded] = React.useState(false);
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [dialogOpen, setDialogOpen] = useState(false);
-
+  const [currentTime, setCurrentTime] = React.useState(new Date());
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [settingsDialogOpen, setSettingsDialogOpen] = React.useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -294,21 +294,25 @@ export default function MiniDrawer() {
     setTimeRange(newValue);
   };
 
-  const handleToggleTimeFilter = () => {
-    setShowTimeFilter(!showTimeFilter);
-    setSearchExpanded(false);
-  };
-
   const handleToggleSearch = (expanded) => {
     setSearchExpanded(expanded);
   };
 
-  const handleDialogOpen = () => {
+  const handleFilterDialogOpen = () => {
     setDialogOpen(true);
   };
 
-  const handleDialogClose = () => {
+  const handleFilterDialogClose = () => {
     setDialogOpen(false);
+  };
+
+  const handleSettingsDialogOpen = () => {
+    console.log('Settings dialog open triggered');
+    setSettingsDialogOpen(true);
+  };
+
+  const handleSettingsDialogClose = () => {
+    setSettingsDialogOpen(false);
   };
 
   const formatTimeRange = (range) => {
@@ -323,16 +327,15 @@ export default function MiniDrawer() {
   };
 
   return (
-    <Box sx={{ display: 'flex', backgroundColor: '#fafafa',backgroundSize: 'cover',backgroundPosition: 'center',minHeight: '100vh', }}>
+    <Box sx={{ display: 'flex', backgroundColor: '#fafafa', backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh' }}>
       <CssBaseline />
-
-      <AppBar position="fixed" open={open} sx={{ backgroundColor: "#724385", height: '45px',padding: 0, overflow: 'hidden', boxSizing: 'border-box'  }}>
+      <AppBar position="fixed" open={open} sx={{ backgroundColor: "#724385", height: '45px', padding: 0, overflow: 'hidden', boxSizing: 'border-box' }}>
         <Toolbar>
           <IconButton
             color="inherit"
             aria-label={open ? "close drawer" : "open drawer"}
             onClick={open ? handleDrawerClose : handleDrawerOpen}
-            sx={{ mb: '25px', ml:'-15px' }}
+            sx={{ mb: '25px', ml: '-15px' }}
           >
             {open ? <ChevronLeftIcon /> : <MenuIcon />}
           </IconButton>
@@ -355,20 +358,21 @@ export default function MiniDrawer() {
             aria-label="toggle search"
             sx={{ mb: '25px' }}
           >
+            
             <SearchTwoToneIcon />
           </IconButton>
           <IconButton
             color="inherit"
-            onClick={handleToggleTimeFilter}
+            onClick={handleFilterDialogOpen}
             aria-label="toggle filter"
             sx={{ mb: '25px' }}
           >
             <FilterAltTwoToneIcon />
           </IconButton>
 
-	   <IconButton
+          <IconButton
             color="inherit"
-            aria-label="toggle filter"
+            aria-label="toggle notifications"
             sx={{ mb: '25px' }}
           >
             <NotificationsIcon />
@@ -377,19 +381,12 @@ export default function MiniDrawer() {
         </Toolbar>
       </AppBar>
 
-      {showTimeFilter && (
-        <TimeRangeFilterBar
-          timeRange={timeRange}
-          handleSliderChange={handleSliderChange}
-        />
-      )}
-
-      <Drawer variant="permanent" open={open} sx={{maxHeight:'100px'}}>
+      <Drawer variant="permanent" open={open} sx={{ maxHeight: '100px' }}>
         <DrawerHeader />
-        <List sx={{ mt: -3, mb: -2,}}>
+        <List sx={{ mt: -3, mb: -2 }}>
           {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
             <ListItem key={text} disablePadding>
-              <ListItemButton sx={{width:'20px'}}>
+              <ListItemButton sx={{ width: '20px' }}>
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                 </ListItemIcon>
@@ -399,11 +396,11 @@ export default function MiniDrawer() {
           ))}
         </List>
 
-        <Divider sx={{ mb: 55, width: '100%', maxWidth: '100%', flexShrink: 0, transform: 'translateZ(0)'}} />
+        <Divider sx={{ mb: 55, width: '100%', maxWidth: '100%', flexShrink: 0, transform: 'translateZ(0)' }} />
 
-        <List sx={{ mt: -1, mb: -2, width: '100%', maxWidth: '100%', boxSizing: 'border-box', }}>
+        <List sx={{ mt: -1, mb: -2, width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
           {['Settings'].map((text) => (
-            <ListItem key={text} disablePadding button onClick={handleDialogOpen} sx={{ display: 'block', width: '100%',boxSizing: 'border-box'}}>
+            <ListItem key={text} disablePadding button onClick={handleSettingsDialogOpen} sx={{ display: 'block', width: '100%', boxSizing: 'border-box' }}>
               <ListItemButton
                 sx={{
                   minHeight: 20,
@@ -418,8 +415,8 @@ export default function MiniDrawer() {
                     justifyContent: 'center',
                     fontSize: 23,
                     ml: 0.7,
-		                position: 'relative',
-		                transform: 'translateZ(0)',
+                    position: 'relative',
+                    transform: 'translateZ(0)',
                   }}
                 />
                 <ListItemText primary="Settings" sx={{ opacity: open ? 1 : 0 }} />
@@ -429,11 +426,23 @@ export default function MiniDrawer() {
         </List>
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box component="main" sx={{ flexGrow: 0, p: 1}}>
         <DrawerHeader />
-        <Box style={{ display:'flex', flexWrap: 'wrap' }}>
-	        <Dialog open={dialogOpen} onClose={handleDialogClose}>
-             <SettingsPopup open={dialogOpen} onClose={handleDialogClose} />
+        <Box style={{ display: 'flex', flexWrap: 'wrap', }}>
+          <Dialog open={dialogOpen} onClose={handleFilterDialogClose} maxWidth={false} fullWidth
+            sx={{
+              '& .MuiDialog-paper': {
+                width: '80vw',
+                height: '70vh',
+                maxWidth: 'none',
+              },
+            }}
+          >
+            <TimeRangeFilterDialog  onClose={handleFilterDialogClose}/>
+         </Dialog>
+
+          <Dialog open={settingsDialogOpen} onClose={handleSettingsDialogClose} maxWidth="sm" fullWidth>
+            <SettingsPopup open={settingsDialogOpen} onClose={handleSettingsDialogClose}/>
           </Dialog>
           <GraphWidget timeRange={timeRange} />
           <GraphWidget timeRange={timeRange} />
@@ -443,5 +452,3 @@ export default function MiniDrawer() {
     </Box>
   );
 }
-
-

@@ -30,6 +30,8 @@ import { useNavigate } from 'react-router-dom';
 import { MyProfileContent } from './MyProfileContent';
 import { ThemeSettings } from './ThemeSettings';
 import  Chatbox  from './Chatbox';
+import TelegramIcon from '@mui/icons-material/Telegram';
+import Tooltip from './Tooltip';
 
 const SettingsPopup = ({ open, onClose }) => {
   const [selectedItem, setSelectedItem] = useState('General');
@@ -51,9 +53,6 @@ const SettingsPopup = ({ open, onClose }) => {
     
   });
 
-
-  
- 
   const handleLanguageChange = (event) => {
     setLanguage(event.target.value);
   };
@@ -113,43 +112,55 @@ const handleLogout = () => {
           <Grid item xs={4} sx={{ display: 'flex', flexDirection: 'column' }}>
             <Box sx={{ flexGrow: 1 }}>
               <List sx={{ padding: 0 }}>
+              <Tooltip text="General Settings">
                 <ListItem button onClick={() => handleListItemClick('General')} sx={listItemStyle('General')}>
                   <LaptopMacRoundedIcon sx={{ marginRight: '8px' }} />
                   <ListItemText primary="General" />
-                </ListItem>
+                  </ListItem>
+              </Tooltip>
                 <Divider />
+              <Tooltip text="Privacy Settings">
                 <ListItem button onClick={() => handleListItemClick('Privacy')} sx={listItemStyle('Privacy')}>
                   <KeyRoundedIcon sx={{ marginRight: '8px' }} />
                   <ListItemText primary="Privacy" />
                 </ListItem>
+              </Tooltip>
                 <Divider />
+              <Tooltip text="Appearance Settings">
                 <ListItem button onClick={() => handleListItemClick('Appearance')} sx={listItemStyle('Appearance')}>
                   <BorderColorRoundedIcon sx={{ marginRight: '8px' }} />
                   <ListItemText primary="Appearance" />
                 </ListItem>
-
-	        <Divider />
+              </Tooltip>
+	              <Divider />
+              <Tooltip text="Chatbox">
                 <ListItem button onClick={() => handleListItemClick('Chatbox')} sx={listItemStyle('Chatbox')}>
-                  <BorderColorRoundedIcon sx={{ marginRight: '8px' }} />
+                  <TelegramIcon sx={{ marginRight: '8px' }} />
                   <ListItemText primary="Chatbox" />
                 </ListItem>
-
+              </Tooltip>
                 <Divider />
+              <Tooltip text="Notifications">
                 <ListItem button onClick={() => handleListItemClick('Notifications')} sx={listItemStyle('Notifications')}>
                   <NotificationsNoneRoundedIcon sx={{ marginRight: '8px' }} />
                   <ListItemText primary="Notifications" />
                 </ListItem>
+              </Tooltip>
                 <Divider />
+              <Tooltip text="Help">
                 <ListItem button onClick={() => handleListItemClick('Help')} sx={listItemStyle('Help')}>
                   <PriorityHighRoundedIcon sx={{ marginRight: '8px' }} />
                   <ListItemText primary="Help" />
                 </ListItem>
+              </Tooltip>
               </List>
             </Box>
+            <Tooltip text="My Profile" >
             <ListItem button onClick={() => handleListItemClick('My Profile')} sx={{ ...listItemStyle('My Profile'), marginTop: 'auto' }}>
               <LaptopMacRoundedIcon sx={{ marginRight: '8px' }} />
               <ListItemText primary="My Profile" />
             </ListItem>
+            </Tooltip>
           </Grid>
           <Divider orientation="vertical" flexItem sx={{ backgroundColor: '#546E7A', height: '100%' }} />
           <Grid item xs={7} ml={2} sx={{ height: '100%', position: 'relative' }}>
@@ -185,22 +196,23 @@ const handleLogout = () => {
         	
         ) : selectedItem === 'Appearance' ? (
               <Box>
-                <Typography variant="h6">Appearance Content</Typography>
+                <Typography variant="h6" mt={2}>Appearance Content</Typography>
                 <ThemeSettings />
               </Box>
 
 
 	 ) : selectedItem === 'Chatbox' ? (
               <Box>
-                <Typography variant="h6">Chat Content</Typography>
+                <Typography variant="h6" mt={2} >Chat Content</Typography>
                 <Chatbox/>
               </Box>
 
 
 	    ) : selectedItem === 'Privacy' ? (
               <Box display="flex" alignItems="flex-start" flexDirection="column" mt={0}>
-                <Typography variant="h6" sx={{ textAlign: 'center' }}>Privacy Settings</Typography>
-                <ListItem button onClick={() => handleListItemClick('Change Password')} 
+                {/* <Typography variant="h6" sx={{ textAlign: 'center' }}>Privacy Settings</Typography> */}
+                <Typography variant="h6" mt={2} >Privacy Settings</Typography>
+                      <ListItem button onClick={() => handleListItemClick('Change Password')} 
 		    sx={{...listItemStyle('Change Password'),marginLeft: '-15px',marginTop: '10px',width: '318px'}}>
                   <ListItemText primary="Change Password" />
                   <IconButton onClick={() => handleListItemClick('Change Password')}>
@@ -227,7 +239,7 @@ const handleLogout = () => {
               </Box>
 	     ) : selectedItem === 'My Profile' ? (
               <Box display="flex" alignItems="center" flexDirection="column" mt={2}>
-                <Typography variant="h6">My Profile Content</Typography>
+                {/* <Typography variant="h6" mt={2}My Profile Content</Typography> */}
                 <MyProfileContent /> {/* Render MyProfileContent component */}
               </Box>
             ): (
@@ -263,11 +275,15 @@ const handleLogout = () => {
                 </IconButton>
               </Box>
             )}
-    <Box sx={{ position: 'absolute', bottom: 7, right: -3 }}>
+           
+           <Box sx={{ position: 'absolute', bottom: 7, right: -3 }}>
+           <Tooltip text="LogOut" >
               <IconButton color="error" onClick={handleLogout}>
                 <PowerSettingsNewRoundedIcon fontSize="large" />
               </IconButton>
+            </Tooltip>
             </Box>
+            
           </Grid>
         </Grid>
       </DialogContent>
