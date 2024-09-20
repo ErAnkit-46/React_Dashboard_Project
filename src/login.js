@@ -14,9 +14,20 @@ function Login() {
   const [errorMessage, setErrorMessage] = useState('');
   const [validationError, setValidationError] = useState('');
   const [errorField, setErrorField] = useState('');
-  const [userNotFound, setUserNotFound] = useState(false);
   const [showLogoutPrompt, setShowLogoutPrompt] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem('email');
+    const storedPassword = localStorage.getItem('password');
+    if (storedEmail) {
+      setEmail(storedEmail);
+    }
+    if (storedPassword) {
+      setPassword(storedPassword);
+    }
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = () => {
@@ -51,6 +62,10 @@ function Login() {
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleRememberMeChange = (event) => {
+    setRememberMe(event.target.checked);
   };
 
   const validateEmail = (email) => {
@@ -96,15 +111,13 @@ function Login() {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
+      const response = await fetch(`http://localhost:5000/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
       });
-
-      console.log('Response status:', response.status); // Debugging log
 
       const contentType = response.headers.get('Content-Type');
       let data;
@@ -114,53 +127,51 @@ function Login() {
         data = { message: await response.text() };
       }
 
-      console.log('Response data:', data); // Debugging log
-
       if (response.status === 200) {
-        setUserEmail(email); // Set the user email in the context
-        sessionStorage.setItem('token', data.token); // Use sessionStorage instead of localStorage
+        setUserEmail(email);
+
+        if (rememberMe) {
+          localStorage.setItem('email', email);
+          localStorage.setItem('password', password);
+        } else {
+          localStorage.removeItem('email');
+          localStorage.removeItem('password');
+        }
+
         setShowLogoutPrompt(false);
-        navigate('/dash'); // Navigate to the dashboard
+        navigate('/dash');
       } else if (response.status === 401) {
-        setShowLogoutPrompt(true); // Show prompt for active session
+        setShowLogoutPrompt(true);
       } else if (response.status === 404) {
-        setUserNotFound(true);
         setErrorMessage(data.message || "Invalid credentials. Please try again.");
       } else {
         throw new Error(data.message || 'An unexpected error occurred.');
       }
     } catch (error) {
-      console.error('Error logging in:', error);
       setErrorMessage(error.message || 'An unexpected error occurred. Please try again later.');
     }
   };
 
   const handleLogoutOtherSession = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/logoutOtherSession', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/logoutOtherSession`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email }),
       });
-
-      console.log('Logout response status:', response.status); // Debugging log
 
       const data = await response.json();
 
-      console.log('Logout response data:', data); // Debugging log
-
       if (response.status === 200) {
-        setUserEmail(email); // Set the user email in the context
-        sessionStorage.setItem('token', data.token); // Use sessionStorage instead of localStorage
+        setUserEmail(email);
         setShowLogoutPrompt(false);
-        navigate('/dash'); // Navigate to the dashboard
+        navigate('/dash');
       } else {
         throw new Error(data.message || 'Failed to log out other session.');
       }
     } catch (error) {
-      console.error('Error logging in:', error);
       setErrorMessage(error.message || 'An unexpected error occurred. Please try again later.');
     }
   };
@@ -194,7 +205,7 @@ function Login() {
             required
           />
           {showTooltip && errorField === 'email' && (
-            <div style={{ ...tooltipStyle, left: '105%', top: '50%' }}>
+            <div role="alert" aria-live="assertive" style={{ ...tooltipStyle, left: '105%', top: '50%' }}>
               {validationError}
             </div>
           )}
@@ -212,7 +223,7 @@ function Login() {
             style={{
               border: '1px solid #090101',
               boxSizing: 'border-box',
-              borderRadius: '5px', 
+              borderRadius: '5px',
               padding: '10px 40px 10px 10px',
               width: '100%',
             }}
@@ -230,7 +241,7 @@ function Login() {
             }}
           />
           {showTooltip && errorField === 'password' && (
-            <div style={{ ...tooltipStyle, left: '105%', top: '50%' }}>
+            <div role="alert" aria-live="assertive" style={{ ...tooltipStyle, left: '105%', top: '50%' }}>
               {validationError}
             </div>
           )}
@@ -238,7 +249,12 @@ function Login() {
 
         <div className="flex">
           <div className="check">
-            <input type="checkbox" id="rememberMe" />
+            <input 
+              type="checkbox" 
+              id="rememberMe" 
+              checked={rememberMe}
+              onChange={handleRememberMeChange}
+            />
             <label htmlFor="rememberMe">Remember me</label>
           </div>
           <div>
@@ -248,7 +264,7 @@ function Login() {
 
         <button type="submit">Log In</button>
         {errorMessage && (
-          <div style={{ color: 'red', marginTop: '10px' }}>
+          <div role="alert" aria-live="assertive" style={{ color: 'red', marginTop: '10px' }}>
             {errorMessage}
           </div>
         )}
